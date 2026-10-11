@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MindSpace — забота о психическом здоровье онлайн</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ПРЕЛОАДЕР -->
+  <div class="preloader" id="preloader">
+    <div class="preloader__logo">
+      <span class="preloader__icon">🌿</span>
+      <span class="preloader__text">MindSpace</span>
+    </div>
+    <div class="preloader__bar"><div class="preloader__fill" id="preloaderFill"></div></div>
+  </div>
+
+  <!-- ПРОГРЕСС-БАР ЧТЕНИЯ -->
+  <div class="progress-bar-top" id="progressBar"></div>
+
+  <!-- КУКИ-БАННЕР -->
+  <div class="cookie-banner" id="cookieBanner">
+    <div class="cookie-banner__content">
+      <p>Мы используем cookie, чтобы улучшить сервис. Оставаясь на сайте, вы соглашаетесь с этим.</p>
+      <div class="cookie-banner__actions">
+        <button class="btn btn--primary" id="cookieAccept">Принять</button>
+        <button class="btn btn--ghost" id="cookieDecline">Отклонить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ШАПКА -->
+  <header class="navbar" id="navbar">
+    <div class="container navbar__inner">
+      <a href="#" class="logo">
+        <span class="logo__icon">🌿</span>
+        <span class="logo__text">MindSpace</span>
+      </a>
+      <nav class="nav" id="nav">
+        <a href="#specialists" class="nav__link">Психологи</a>
+        <a href="#how" class="nav__link">Как это работает</a>
+        <a href="#mood" class="nav__link">Дневник</a>
+        <a href="#tests" class="nav__link">Тесты</a>
+      </nav>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="themeBtn" title="Тема">🌙</button>
+        <button class="icon-btn" id="notifBtn" title="Уведомления">
+          🔔<span class="icon-btn__badge">3</span>
+        </button>
+        <button class="btn btn--primary" data-scroll="specialists">Записаться</button>
+        <button class="burger" id="burger" aria-label="Меню">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero__inner">
+      <span class="hero__badge">Психическое здоровье — приоритет</span>
+      <h1 class="hero__title">Позаботься о себе.<br>Онлайн. Анонимно.</h1>
+      <p class="hero__subtitle">
+        Найдите психолога, ведите дневник настроения, проходите тесты — всё в одном месте.
+        Первая консультация со скидкой 50%.
+      </p>
+      <div class="hero__buttons">
+        <a href="#specialists" class="btn btn--primary">Найти психолога</a>
+        <a href="#how" class="btn btn--ghost">Как это работает</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- СТАТИСТИКА -->
+  <section class="stats">
+    <div class="container stats__grid">
+      <div class="stat">
+        <div class="stat__num" data-count="12000">0</div>
+        <div class="stat__label">сессий проведено</div>
+      </div>
+      <div class="stat">
+        <div class="stat__num" data-count="127">0</div>
+        <div class="stat__label">психологов в базе</div>
+      </div>
+      <div class="stat">
+        <div class="stat__num" data-count="98">0</div>
+        <div class="stat__label">% возвращаются</div>
+      </div>
+      <div class="stat">
+        <div class="stat__num" data-count="49" data-suffix=".9">0</div>
+        <div class="stat__label">средний рейтинг</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- КАК ЭТО РАБОТАЕТ -->
+  <section id="how" class="section section--gray">
+    <div class="container">
+      <h2 class="section__title">Как это работает</h2>
+      <p class="section__subtitle">Три шага — и вы на связи со специалистом</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step__num step__num--mint">1</div>
+          <h3 class="step__title">Выбери психолога</h3>
+          <p class="step__text">Фильтры по специализации, цене и формату. Читай отзывы и выбирай своего.</p>
+        </div>
+        <div class="step">
+          <div class="step__num step__num--lavender">2</div>
+          <h3 class="step__title">Запишись на сессию</h3>
+          <p class="step__text">Видео, чат или аудио — как тебе удобно. Оплата онлайн, чек на почту.</p>
+        </div>
+        <div class="step">
+          <div class="step__num step__num--peach">3</div>
+          <h3 class="step__title">Позаботься о себе</h3>
+          <p class="step__text">Веди дневник настроения, проходи тесты и следи за прогрессом.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- СПЕЦИАЛИСТЫ -->
+  <section id="specialists" class="section">
+    <div class="container">
+      <h2 class="section__title">Наши специалисты</h2>
+      <p class="section__subtitle">Все психологи имеют диплом и опыт от 3 лет</p>
+
+      <div class="filters">
+        <select class="filter" id="filterSpec">
+          <option value="">Все специализации</option>
+          <option value="anxiety">Тревожность</option>
+          <option value="depression">Депрессия</option>
+          <option value="relations">Отношения</option>
+          <option value="career">Карьера</option>
+          <option value="child">Детская психология</option>
+        </select>
+        <select class="filter" id="filterPrice">
+          <option value="">Любая цена</option>
+          <option value="2000">до 2 000 ₽</option>
+          <option value="3000">до 3 000 ₽</option>
+          <option value="5000">до 5 000 ₽</option>
+        </select>
+        <input type="text" class="filter filter--search" id="filterSearch" placeholder="Поиск по имени">
+      </div>
+
+      <div class="cards" id="specialistsGrid"></div>
+      <p class="empty-message" id="emptyMessage" hidden>Ничего не найдено. Попробуйте изменить фильтры.</p>
+    </div>
+  </section>
+
+  <!-- ДНЕВНИК -->
+  <section id="mood" class="section section--gray">
+    <div class="container">
+      <h2 class="section__title">Дневник настроения</h2>
+      <p class="section__subtitle">Отмечайте состояние каждый день — и увидите динамику</p>
+
+      <div class="mood-widget">
+        <div class="mood-calendar">
+          <div class="mood-calendar__header">
+            <button class="icon-btn" id="prevMonth" aria-label="Предыдущий месяц">←</button>
+            <span class="mood-calendar__month" id="currentMonth">Октябрь 2026</span>
+            <button class="icon-btn" id="nextMonth" aria-label="Следующий месяц">→</button>
+          </div>
+          <div class="mood-calendar__weekdays">
+            <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
+          </div>
+          <div class="mood-calendar__grid" id="moodGrid"></div>
+        </div>
+
+        <div class="mood-stats">
+          <h3 class="mood-stats__title">Динамика настроения</h3>
+          <canvas id="moodChart" width="500" height="220"></canvas>
+          <div class="mood-summary">
+            <div class="mood-summary__item">
+              <div class="mood-summary__label">Среднее</div>
+              <div class="mood-summary__value" id="moodAvg">—</div>
+            </div>
+            <div class="mood-summary__item">
+              <div class="mood-summary__label">Лучший день</div>
+              <div class="mood-summary__value" id="moodBest">—</div>
+            </div>
+            <div class="mood-summary__item">
+              <div class="mood-summary__label">Дней отмечено</div>
+              <div class="mood-summary__value" id="moodCount">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ТЕСТЫ -->
+  <section id="tests" class="section">
+    <div class="container">
+      <h2 class="section__title">Психологические тесты</h2>
+      <p class="section__subtitle">Пройди короткий тест и узнай своё состояние</p>
+      <div class="tests" id="testsGrid"></div>
+    </div>
+  </section>
+
+  <!-- ОТЗЫВЫ -->
+  <section id="reviews" class="section section--gray">
+    <div class="container">
+      <h2 class="section__title">Отзывы клиентов</h2>
+      <p class="section__subtitle">Более 12 000 сессий проведено</p>
+
+      <div class="reviews-slider">
+        <button class="slider-btn slider-btn--prev" id="prevReview">‹</button>
+        <div class="reviews-track" id="reviewsTrack"></div>
+        <button class="slider-btn slider-btn--next" id="nextReview">›</button>
+      </div>
+      <div class="reviews-dots" id="reviewsDots"></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="container cta__inner">
+      <h2 class="cta__title">Начни заботиться о себе сегодня</h2>
+      <p class="cta__subtitle">Первая сессия — со скидкой 50%</p>
+      <button class="btn btn--white" data-scroll="specialists">Записаться на сессию</button>
+    </div>
+  </section>
+
+  <!-- ПОДВАЛ -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div>
+        <div class="logo logo--footer">
+          <span class="logo__icon">🌿</span>
+          <span class="logo__text">MindSpace</span>
+        </div>
+        <p class="footer__text">Онлайн-платформа психологической поддержки</p>
+      </div>
+      <div>
+        <p class="footer__heading">Сервис</p>
+        <a href="#specialists" class="footer__link">Психологи</a>
+        <a href="#mood" class="footer__link">Дневник</a>
+        <a href="#tests" class="footer__link">Тесты</a>
+      </div>
+      <div>
+        <p class="footer__heading">Контакты</p>
+        <p class="footer__link">hello@mindspace.ru</p>
+        <p class="footer__link">+7 (495) 000-00-00</p>
+      </div>
+    </div>
+
+    <div class="footer__subscribe">
+      <div class="container">
+        <h3 class="footer__subscribe-title">Письма о ментальном здоровье</h3>
+        <p class="footer__subscribe-text">Раз в неделю — упражнения и статьи. Без спама.</p>
+        <form class="subscribe-form" id="subscribeForm">
+          <input type="email" class="subscribe-form__input" id="subscribeEmail" placeholder="ваш@email.ru" required>
+          <button type="submit" class="btn btn--primary">Подписаться</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <div class="container">© 2026 MindSpace · Учебный проект МТУСИ</div>
+    </div>
+  </footer>
+
+  <!-- МОДАЛКА -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal__overlay" data-close="true"></div>
+    <div class="modal__window">
+      <button class="modal__close" data-close="true" aria-label="Закрыть">✕</button>
+      <div class="modal__body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- КНОПКА НАВЕРХ -->
+  <button class="scroll-top" id="scrollTop" aria-label="Наверх">↑</button>
+
+  <!-- TOAST -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
