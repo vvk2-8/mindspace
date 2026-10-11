@@ -89,29 +89,7 @@ function updateFavCount() {
   badge.classList.toggle('icon-btn__badge--hidden', FAVORITES.length === 0);
 }
 
-// ============ УВЕДОМЛЕНИЯ ============
-function loadNotifications() {
-  try { return JSON.parse(localStorage.getItem('mindspace_notifications') || '[]'); }
-  catch (e) { return []; }
-}
-function saveNotifications(list) {
-  localStorage.setItem('mindspace_notifications', JSON.stringify(list));
-}
-function addNotification(text) {
-  const list = loadNotifications();
-  list.unshift({ id: Date.now() + Math.random(), text, time: new Date().toISOString(), read: false });
-  if (list.length > 50) list.length = 50;
-  saveNotifications(list);
-  showPushNotification('MindSpace', text);
-}
-function getUnreadCount() {
-  return loadNotifications().filter(n => !n.read).length;
-}
-function markNotificationsRead() {
-  const list = loadNotifications();
-  list.forEach(n => n.read = true);
-  saveNotifications(list);
-}
+// ============ УВЕДОМЛЕНИЯ (только push-уведомления, без админ-раздела) ============
 function showPushNotification(title, body) {
   if (!('Notification' in window)) return;
   if (Notification.permission !== 'granted') return;
@@ -133,13 +111,6 @@ function formatDuration(min) {
   if (min < 60) return `${min} мин`;
   const h = Math.floor(min / 60), m = min % 60;
   return m === 0 ? `${h} ч` : `${h} ч ${m} мин`;
-}
-function formatTimeAgo(isoStr) {
-  const diff = Math.floor((Date.now() - new Date(isoStr).getTime()) / 1000);
-  if (diff < 60) return 'только что';
-  if (diff < 3600) return `${Math.floor(diff / 60)} мин назад`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)} ч назад`;
-  return `${Math.floor(diff / 86400)} дн назад`;
 }
 function isFutureDate(y, m, d) {
   const today = new Date();
@@ -639,7 +610,7 @@ function renderBookingStep() {
         saveSpecialists(all);
         SPECIALISTS = all;
       }
-      addNotification(`Новая запись: ${name} → ${sp.name} (${formatDate(bookingData.slot.date)}, ${bookingData.slot.time})`);
+      showPushNotification('MindSpace', `Новая запись: ${name} → ${sp.name}`);
       renderSpecialists();
       showToast(`Заявка отправлена, ${name}!`, 'success');
       closeModal();
@@ -1077,16 +1048,12 @@ function openAdminPanel() {
 function renderAdminPanel() {
   const body = document.getElementById('adminPanelBody');
   if (!body) return;
-  const unread = getUnreadCount();
-  const unreadBadge = unread > 0 ? `<span class="admin-tab__badge">${unread}</span>` : '';
 
   body.innerHTML = `
     <div class="admin-tabs">
       <button class="admin-tab ${adminTab === 'list' ? 'admin-tab--active' : ''}" data-tab="list">Психологи</button>
       <button class="admin-tab ${adminTab === 'add' ? 'admin-tab--active' : ''}" data-tab="add">${editingSpecialistId ? 'Ред.' : '+ Добавить'}</button>
       <button class="admin-tab ${adminTab === 'slots' ? 'admin-tab--active' : ''}" data-tab="slots">Окошки</button>
-      <button class="admin-tab ${adminTab === 'notifs' ? 'admin-tab--active' : ''}" data-tab="notifs">Уведомл.${unreadBadge}</button>
-      <button class="admin-tab ${adminTab === 'stats' ? 'admin-tab--active' : ''}" data-tab="stats">Статистика</button>
     </div>
     <div id="adminContent"></div>
   `;
@@ -1094,7 +1061,6 @@ function renderAdminPanel() {
     tab.addEventListener('click', () => {
       adminTab = tab.dataset.tab;
       if (adminTab !== 'add') editingSpecialistId = null;
-      if (adminTab === 'notifs') markNotificationsRead();
       renderAdminPanel();
     });
   });
@@ -1126,12 +1092,10 @@ function renderAdminPanel() {
       btn.addEventListener('click', () => {
         const id = Number(btn.dataset.del);
         if (!confirm('Удалить психолога?')) return;
-        const name = SPECIALISTS.find(x => x.id === id)?.name;
         SPECIALISTS = SPECIALISTS.filter(x => x.id !== id);
         saveSpecialists(SPECIALISTS);
         FAVORITES = FAVORITES.filter(fid => fid !== id);
         saveFavorites(FAVORITES);
-        if (name) addNotification(`Психолог удалён: ${name}`);
         renderSpecialists(); renderAdminPanel();
         showToast('Психолог удалён', 'success');
       });
@@ -1140,10 +1104,6 @@ function renderAdminPanel() {
     renderAddForm(content);
   } else if (adminTab === 'slots') {
     renderSlotsTab(content);
-  } else if (adminTab === 'notifs') {
-    renderNotifsTab(content);
-  } else if (adminTab === 'stats') {
-    renderStatsTab(content);
   }
 }
 
@@ -1195,12 +1155,10 @@ function renderAddForm(content) {
     if (editing) {
       const idx = SPECIALISTS.findIndex(x => x.id === editing.id);
       SPECIALISTS[idx] = { ...SPECIALISTS[idx], name, initials, color, spec: specVal, specName: specLabels[specVal], experience: exp, price, bio, education, languages, approach };
-      addNotification(`Обновлён психолог: ${name}`);
       showToast('Изменения сохранены', 'success');
     } else {
       const newId = Math.max(0, ...SPECIALISTS.map(s => s.id)) + 1;
       SPECIALISTS.push({ id: newId, name, initials, color, spec: specVal, specName: specLabels[specVal], experience: exp, price, rating: 5.0, reviews: 0, bio, education, languages, approach, slots: [] });
-      addNotification(`Добавлен психолог: ${name}`);
       showToast('Психолог добавлен', 'success');
     }
     saveSpecialists(SPECIALISTS);
@@ -1297,70 +1255,6 @@ function renderSlotsTab(content) {
     showToast('Окошко добавлено', 'success');
   });
   renderSlotsList();
-}
-
-function renderNotifsTab(content) {
-  const list = loadNotifications();
-  if (!list.length) { content.innerHTML = '<p style="color: var(--text-soft);">Пока нет уведомлений.</p>'; return; }
-  content.innerHTML = `
-    <p style="color: var(--text-soft); margin-bottom: 12px; font-size: 14px;">Всего: ${list.length}</p>
-    <div class="notif-list">
-      ${list.map(n => `<div class="notif-item ${!n.read ? 'notif-item--unread' : ''}"><div class="notif-item__text">${n.text}</div><div class="notif-item__time">${formatTimeAgo(n.time)}</div></div>`).join('')}
-    </div>
-    <button class="btn btn--ghost btn--full" id="clearNotifs" style="margin-top: 16px;">Очистить все</button>
-  `;
-  document.getElementById('clearNotifs')?.addEventListener('click', () => {
-    if (!confirm('Очистить все уведомления?')) return;
-    saveNotifications([]);
-    renderAdminPanel();
-    showToast('Уведомления очищены', 'success');
-  });
-}
-
-function renderStatsTab(content) {
-  let totalSlots = 0, bookedSlots = 0, freeSlots = 0;
-  const bySpec = {};
-  const byPsychologist = [];
-  SPECIALISTS.forEach(s => {
-    const slots = s.slots || [];
-    totalSlots += slots.length;
-    const booked = slots.filter(x => x.booked).length;
-    bookedSlots += booked;
-    freeSlots += slots.length - booked;
-    bySpec[s.specName] = (bySpec[s.specName] || 0) + 1;
-    byPsychologist.push({ name: s.name, booked, total: slots.length });
-  });
-  const maxSlots = Math.max(1, ...byPsychologist.map(p => p.total));
-  const maxSpec = Math.max(1, ...Object.values(bySpec));
-  content.innerHTML = `
-    <p style="color: var(--text-soft); margin-bottom: 16px; font-size: 14px;">Общая статистика</p>
-    <div class="stats-grid-admin">
-      <div class="stat-card-admin"><div class="stat-card-admin__num">${SPECIALISTS.length}</div><div class="stat-card-admin__label">Психологов</div></div>
-      <div class="stat-card-admin"><div class="stat-card-admin__num">${totalSlots}</div><div class="stat-card-admin__label">Всего окошек</div></div>
-      <div class="stat-card-admin"><div class="stat-card-admin__num" style="color: var(--red);">${bookedSlots}</div><div class="stat-card-admin__label">Занято</div></div>
-      <div class="stat-card-admin"><div class="stat-card-admin__num" style="color: var(--mint-dark);">${freeSlots}</div><div class="stat-card-admin__label">Свободно</div></div>
-    </div>
-    <h4 style="font-family: var(--font-heading); font-size: 16px; margin-bottom: 12px;">По специализациям</h4>
-    <div class="chart-bars">
-      ${Object.entries(bySpec).sort((a,b)=>b[1]-a[1]).map(([name,count]) => `
-        <div class="chart-bar-row">
-          <span class="chart-bar-row__label">${name}</span>
-          <div class="chart-bar-row__track"><div class="chart-bar-row__fill" style="width: ${(count/maxSpec)*100}%"></div></div>
-          <span class="chart-bar-row__value">${count}</span>
-        </div>
-      `).join('')}
-    </div>
-    <h4 style="font-family: var(--font-heading); font-size: 16px; margin: 24px 0 12px;">Записи по психологам</h4>
-    <div class="chart-bars">
-      ${byPsychologist.sort((a,b)=>b.booked-a.booked).map(p => `
-        <div class="chart-bar-row">
-          <span class="chart-bar-row__label">${p.name.split(' ')[0]}</span>
-          <div class="chart-bar-row__track"><div class="chart-bar-row__fill" style="width: ${p.total > 0 ? (p.booked/maxSlots)*100 : 0}%"></div></div>
-          <span class="chart-bar-row__value">${p.booked}/${p.total}</span>
-        </div>
-      `).join('')}
-    </div>
-  `;
 }
 
 // ============ ИНИЦИАЛИЗАЦИЯ ============
