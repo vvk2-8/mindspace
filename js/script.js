@@ -1,4 +1,5 @@
-// ============ ДАННЫЕ ============
+// список психологов. Пока просто массив в коде, потом можно
+// вынести в базу данных, но для учебного проекта и так сойдёт
 const DEFAULT_SPECIALISTS = [
   { id: 1, name: 'Анна Смирнова', initials: 'АС', color: '#A8D5BA', spec: 'anxiety', specName: 'Тревожность', experience: 8, price: 2500, rating: 4.9, reviews: 124,
     bio: 'Специализируюсь на работе с тревожными состояниями и паническими атаками.', education: 'МГУ им. М.В. Ломоносова, 2016', languages: 'Русский, английский', approach: 'КПТ, mindfulness',
@@ -6,42 +7,43 @@ const DEFAULT_SPECIALISTS = [
       { date: '2026-10-15', time: '10:00', duration: 60, booked: false },
       { date: '2026-10-15', time: '14:00', duration: 60, booked: false },
       { date: '2026-10-16', time: '12:00', duration: 90, booked: true },
-      { date: '2026-10-17', time: '16:00', duration: 60, booked: false },
+      { date: '2026-10-17', time: '16:00', duration: 60, booked: false }
     ]},
   { id: 2, name: 'Дмитрий Волков', initials: 'ДВ', color: '#B8A9D9', spec: 'depression', specName: 'Депрессия', experience: 12, price: 3500, rating: 5.0, reviews: 210,
     bio: 'Работаю с депрессивными состояниями, потерей смысла, кризисами.', education: 'СПбГУ, 2012', languages: 'Русский', approach: 'Психодинамическая терапия, ACT',
     slots: [
       { date: '2026-10-15', time: '11:00', duration: 60, booked: false },
       { date: '2026-10-16', time: '15:00', duration: 90, booked: false },
-      { date: '2026-10-18', time: '10:00', duration: 60, booked: false },
+      { date: '2026-10-18', time: '10:00', duration: 60, booked: false }
     ]},
   { id: 3, name: 'Елена Кузнецова', initials: 'ЕК', color: '#F2C4A7', spec: 'relations', specName: 'Отношения', experience: 6, price: 2000, rating: 4.8, reviews: 89,
     bio: 'Помогаю парам и отдельным людям разбираться в отношениях.', education: 'РГГУ, 2018', languages: 'Русский', approach: 'Системная семейная терапия, ЭФТ',
     slots: [
       { date: '2026-10-15', time: '13:00', duration: 60, booked: false },
-      { date: '2026-10-17', time: '18:00', duration: 60, booked: false },
+      { date: '2026-10-17', time: '18:00', duration: 60, booked: false }
     ]},
   { id: 4, name: 'Игорь Петров', initials: 'ИП', color: '#A8D5BA', spec: 'career', specName: 'Карьера', experience: 10, price: 3000, rating: 4.9, reviews: 156,
     bio: 'Карьерный консультант. Помогаю найти своё дело.', education: 'ВШЭ, 2014', languages: 'Русский, английский', approach: 'Коучинг, КПТ',
     slots: [
       { date: '2026-10-16', time: '11:00', duration: 60, booked: false },
-      { date: '2026-10-18', time: '14:00', duration: 90, booked: false },
+      { date: '2026-10-18', time: '14:00', duration: 90, booked: false }
     ]},
   { id: 5, name: 'Мария Соколова', initials: 'МС', color: '#B8A9D9', spec: 'child', specName: 'Детская психология', experience: 7, price: 2800, rating: 5.0, reviews: 98,
     bio: 'Работаю с детьми от 4 до 16 лет и их родителями.', education: 'МПГУ, 2017', languages: 'Русский', approach: 'Игровая терапия, арт-терапия',
     slots: [
       { date: '2026-10-15', time: '16:00', duration: 60, booked: false },
-      { date: '2026-10-17', time: '11:00', duration: 45, booked: false },
+      { date: '2026-10-17', time: '11:00', duration: 45, booked: false }
     ]},
   { id: 6, name: 'Ольга Новикова', initials: 'ОН', color: '#F2C4A7', spec: 'anxiety', specName: 'Тревожность', experience: 5, price: 1800, rating: 4.7, reviews: 67,
     bio: 'Помогаю справиться с тревогой, страхами и неуверенностью.', education: 'МГППУ, 2019', languages: 'Русский', approach: 'КПТ, телесно-ориентированная терапия',
     slots: [
       { date: '2026-10-16', time: '10:00', duration: 60, booked: false },
-      { date: '2026-10-18', time: '17:00', duration: 60, booked: false },
-    ]},
+      { date: '2026-10-18', time: '17:00', duration: 60, booked: false }
+    ]}
 ];
 
-// ============ ХРАНИЛИЩЕ ============
+// сохранение и загрузка из localStorage. Долго не понимала,
+// зачем нужны JSON.parse и JSON.stringify, но без них ничего не работало
 function loadSpecialists() {
   const saved = localStorage.getItem('mindspace_specialists');
   if (saved) {
@@ -59,19 +61,27 @@ function loadSpecialists() {
   }
   return JSON.parse(JSON.stringify(DEFAULT_SPECIALISTS));
 }
+
 function saveSpecialists(list) {
   localStorage.setItem('mindspace_specialists', JSON.stringify(list));
 }
+
 let SPECIALISTS = loadSpecialists();
 
-// ============ ИЗБРАННОЕ ============
+// избранное. Хранится в браузере пользователя,
+// чтобы не пропадало после перезагрузки страницы
 function loadFavorites() {
-  try { return JSON.parse(localStorage.getItem('mindspace_favorites') || '[]'); }
-  catch (e) { return []; }
+  try {
+    return JSON.parse(localStorage.getItem('mindspace_favorites') || '[]');
+  } catch (e) {
+    return [];
+  }
 }
+
 function saveFavorites(list) {
   localStorage.setItem('mindspace_favorites', JSON.stringify(list));
 }
+
 let FAVORITES = loadFavorites();
 
 function toggleFavorite(id) {
@@ -89,29 +99,36 @@ function updateFavCount() {
   badge.classList.toggle('icon-btn__badge--hidden', FAVORITES.length === 0);
 }
 
-// ============ УВЕДОМЛЕНИЯ (только push-уведомления, без админ-раздела) ============
+// push-уведомления браузера. Работают только если пользователь
+// разрешил уведомления при входе в админку
 function showPushNotification(title, body) {
   if (!('Notification' in window)) return;
   if (Notification.permission !== 'granted') return;
-  try { new Notification(title, { body }); } catch (e) {}
+  try {
+    new Notification(title, { body });
+  } catch (e) {}
 }
+
 function requestNotificationPermission() {
   if (!('Notification' in window)) return;
   if (Notification.permission === 'default') Notification.requestPermission();
 }
 
-// ============ УТИЛИТЫ ============
+// вспомогательные функции для дат и длительности
 function formatDate(dateStr) {
   const parts = dateStr.split('-');
   const months = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
   return `${Number(parts[2])} ${months[Number(parts[1]) - 1]}`;
 }
+
 function formatDuration(min) {
   min = Number(min) || 60;
   if (min < 60) return `${min} мин`;
-  const h = Math.floor(min / 60), m = min % 60;
+  const h = Math.floor(min / 60);
+  const m = min % 60;
   return m === 0 ? `${h} ч` : `${h} ч ${m} мин`;
 }
+
 function isFutureDate(y, m, d) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -119,6 +136,7 @@ function isFutureDate(y, m, d) {
   cellDate.setHours(0, 0, 0, 0);
   return cellDate.getTime() > today.getTime();
 }
+
 function isTodayDate(y, m, d) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -127,16 +145,23 @@ function isTodayDate(y, m, d) {
   return cellDate.getTime() === today.getTime();
 }
 
-// ============ АДМИН ============
+// вход в админку. Логин admin, пароль admin123.
+// Пароль хранится прямо в коде, для учебного проекта нормально,
+// в реальном нужно было бы через сервер
 const ADMIN_LOGIN = 'admin';
 const ADMIN_PASSWORD = 'admin123';
-function isAdminLogged() { return localStorage.getItem('mindspace_admin') === 'true'; }
+
+function isAdminLogged() {
+  return localStorage.getItem('mindspace_admin') === 'true';
+}
+
 function setAdminLogged(value) {
   if (value) localStorage.setItem('mindspace_admin', 'true');
   else localStorage.removeItem('mindspace_admin');
 }
 
-// ============ ТЕСТЫ ============
+// психологические тесты. Три штуки: стресс, тревожность, выгорание.
+// Каждый тест состоит из 5 вопросов, у каждого ответа свой балл
 const TESTS = [
   { id: 'stress', icon: '01', title: 'Уровень стресса', desc: '5 вопросов · 2 минуты',
     questions: [
@@ -144,12 +169,12 @@ const TESTS = [
       { q: 'Как вы спите?', answers: [{ text: 'Отлично', score: 0 }, { text: 'Иногда плохо', score: 1 }, { text: 'Часто не могу уснуть', score: 2 }, { text: 'Бессонница', score: 3 }] },
       { q: 'Как быстро вы раздражаетесь?', answers: [{ text: 'Трудно вывести', score: 0 }, { text: 'Иногда', score: 1 }, { text: 'Часто по мелочам', score: 2 }, { text: 'Постоянно', score: 3 }] },
       { q: 'Успеваете ли вы отдыхать?', answers: [{ text: 'Да, регулярно', score: 0 }, { text: 'Иногда', score: 1 }, { text: 'Редко', score: 2 }, { text: 'Почти никогда', score: 3 }] },
-      { q: 'Есть ли физические симптомы?', answers: [{ text: 'Нет', score: 0 }, { text: 'Редко', score: 1 }, { text: 'Часто', score: 2 }, { text: 'Постоянно', score: 3 }] },
+      { q: 'Есть ли физические симптомы?', answers: [{ text: 'Нет', score: 0 }, { text: 'Редко', score: 1 }, { text: 'Часто', score: 2 }, { text: 'Постоянно', score: 3 }] }
     ],
     results: [
       { max: 4, icon: '✓', title: 'Стресс под контролем', text: 'Вы хорошо справляетесь с нагрузкой.' },
       { max: 9, icon: '—', title: 'Умеренный стресс', text: 'Обратите внимание на отдых.' },
-      { max: 20, icon: '!', title: 'Повышенный стресс', text: 'Рекомендуем консультацию психолога.' },
+      { max: 20, icon: '!', title: 'Повышенный стресс', text: 'Рекомендуем консультацию психолога.' }
     ] },
   { id: 'anxiety', icon: '02', title: 'Шкала тревожности', desc: '5 вопросов · 2 минуты',
     questions: [
@@ -157,12 +182,12 @@ const TESTS = [
       { q: 'Трудно ли вам расслабиться?', answers: [{ text: 'Нет', score: 0 }, { text: 'Иногда', score: 1 }, { text: 'Часто', score: 2 }, { text: 'Постоянно', score: 3 }] },
       { q: 'Бывают ли панические состояния?', answers: [{ text: 'Никогда', score: 0 }, { text: 'Один раз', score: 1 }, { text: 'Несколько раз', score: 2 }, { text: 'Регулярно', score: 3 }] },
       { q: 'Легко ли вам сосредоточиться?', answers: [{ text: 'Да', score: 0 }, { text: 'Обычно да', score: 1 }, { text: 'С трудом', score: 2 }, { text: 'Очень трудно', score: 3 }] },
-      { q: 'Беспокоитесь в новой обстановке?', answers: [{ text: 'Нет', score: 0 }, { text: 'Немного', score: 1 }, { text: 'Сильно', score: 2 }, { text: 'Очень сильно', score: 3 }] },
+      { q: 'Беспокоитесь в новой обстановке?', answers: [{ text: 'Нет', score: 0 }, { text: 'Немного', score: 1 }, { text: 'Сильно', score: 2 }, { text: 'Очень сильно', score: 3 }] }
     ],
     results: [
       { max: 4, icon: '✓', title: 'Низкая тревожность', text: 'Вы спокойны и уравновешены.' },
       { max: 9, icon: '—', title: 'Умеренная тревожность', text: 'Стоит обратить внимание на релаксацию.' },
-      { max: 20, icon: '!', title: 'Высокая тревожность', text: 'Рекомендуем обратиться к психологу.' },
+      { max: 20, icon: '!', title: 'Высокая тревожность', text: 'Рекомендуем обратиться к психологу.' }
     ] },
   { id: 'burnout', icon: '03', title: 'Выгорание', desc: '5 вопросов · 2 минуты',
     questions: [
@@ -170,24 +195,25 @@ const TESTS = [
       { q: 'Интересует ли вас работа?', answers: [{ text: 'Да, очень', score: 0 }, { text: 'Обычно да', score: 1 }, { text: 'Скорее нет', score: 2 }, { text: 'Совсем нет', score: 3 }] },
       { q: 'Истощены после рабочего дня?', answers: [{ text: 'Нет', score: 0 }, { text: 'Немного', score: 1 }, { text: 'Сильно', score: 2 }, { text: 'Очень сильно', score: 3 }] },
       { q: 'Снизилась продуктивность?', answers: [{ text: 'Нет', score: 0 }, { text: 'Немного', score: 1 }, { text: 'Заметно', score: 2 }, { text: 'Значительно', score: 3 }] },
-      { q: 'Бывают эмоциональные срывы?', answers: [{ text: 'Нет', score: 0 }, { text: 'Редко', score: 1 }, { text: 'Иногда', score: 2 }, { text: 'Часто', score: 3 }] },
+      { q: 'Бывают эмоциональные срывы?', answers: [{ text: 'Нет', score: 0 }, { text: 'Редко', score: 1 }, { text: 'Иногда', score: 2 }, { text: 'Часто', score: 3 }] }
     ],
     results: [
       { max: 4, icon: '✓', title: 'Выгорания нет', text: 'Вы сохраняете баланс.' },
       { max: 9, icon: '—', title: 'Начальная стадия', text: 'Стоит задуматься об отдыхе.' },
-      { max: 20, icon: '!', title: 'Высокое выгорание', text: 'Обратитесь к специалисту.' },
-    ] },
+      { max: 20, icon: '!', title: 'Высокое выгорание', text: 'Обратитесь к специалисту.' }
+    ] }
 ];
 
+// настроения для дневника. 5 вариантов
 const MOODS = [
   { value: 1, num: '1', label: 'Плохо' },
   { value: 2, num: '2', label: 'Так себе' },
   { value: 3, num: '3', label: 'Нормально' },
   { value: 4, num: '4', label: 'Хорошо' },
-  { value: 5, num: '5', label: 'Отлично' },
+  { value: 5, num: '5', label: 'Отлично' }
 ];
 
-// ============ TOAST ============
+// всплывающие сообщения в углу экрана
 function showToast(message, type = 'info', duration = 3500) {
   const container = document.getElementById('toastContainer');
   if (!container) return;
@@ -202,7 +228,7 @@ function showToast(message, type = 'info', duration = 3500) {
   }, duration);
 }
 
-// ============ ПРЕЛОАДЕР ============
+// прелоадер. Показывается пока грузится сайт
 function initPreloader() {
   const preloader = document.getElementById('preloader');
   const fill = document.getElementById('preloaderFill');
@@ -215,11 +241,13 @@ function initPreloader() {
       fill.style.width = '100%';
       clearInterval(interval);
       setTimeout(() => preloader.classList.add('preloader--hidden'), 300);
-    } else fill.style.width = progress + '%';
+    } else {
+      fill.style.width = progress + '%';
+    }
   }, 150);
 }
 
-// ============ БУРГЕР ============
+// кнопка меню для мобильных
 function initBurger() {
   const burger = document.getElementById('burger');
   const nav = document.getElementById('nav');
@@ -236,7 +264,7 @@ function initBurger() {
   });
 }
 
-// ============ КУКИ ============
+// баннер про cookies внизу страницы
 function initCookieBanner() {
   const banner = document.getElementById('cookieBanner');
   if (!banner) return;
@@ -253,7 +281,7 @@ function initCookieBanner() {
   });
 }
 
-// ============ СЧЁТЧИКИ ============
+// счётчики цифр на главной. Анимируются при появлении на экране
 function initCounters() {
   const counters = document.querySelectorAll('[data-count]');
   if (!counters.length) return;
@@ -274,13 +302,16 @@ function initCounters() {
   };
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) { animate(entry.target); observer.unobserve(entry.target); }
+      if (entry.isIntersecting) {
+        animate(entry.target);
+        observer.unobserve(entry.target);
+      }
     });
   }, { threshold: 0.5 });
   counters.forEach(el => observer.observe(el));
 }
 
-// ============ СПЕЦИАЛИСТЫ ============
+// отрисовка карточек психологов с учётом фильтров
 function renderSpecialists() {
   const grid = document.getElementById('specialistsGrid');
   if (!grid) return;
@@ -340,7 +371,7 @@ function renderSpecialists() {
   });
 }
 
-// ============ МОДАЛКА ИЗБРАННОГО ============
+// окно с избранными психологами
 function openFavoritesModal() {
   const modal = document.getElementById('modal');
   const body = document.getElementById('modalBody');
@@ -386,7 +417,7 @@ function openFavoritesModal() {
   });
 }
 
-// ============ ПРОФИЛЬ ПСИХОЛОГА ============
+// окно профиля психолога с вкладками
 function openProfileModal(sp) {
   const modal = document.getElementById('modal');
   const body = document.getElementById('modalBody');
@@ -463,7 +494,7 @@ function openProfileModal(sp) {
   modal.classList.add('modal--open');
 }
 
-// ============ МОДАЛКА ============
+// закрытие модальных окон
 function closeModal() {
   const modal = document.getElementById('modal');
   if (modal) modal.classList.remove('modal--open');
@@ -471,7 +502,7 @@ function closeModal() {
   if (w) w.classList.remove('modal__window--wide');
 }
 
-// ============ БРОНИРОВАНИЕ ============
+// запись на сессию. Делала в 3 шага, чтобы пользователь не путался
 let bookingStep = 1;
 let bookingData = { specialist: null, slot: null, name: '', email: '' };
 
@@ -489,6 +520,8 @@ function openBookingModal(sp, slot = null) {
   renderBookingStep();
 }
 
+// тут логика 3 шагов записи. Сначала выбрал психолога, потом время,
+// потом ввёл контакты. Проверяла каждую ветку, чтобы ничего не пропустить
 function renderBookingStep() {
   const modal = document.getElementById('modal');
   const body = document.getElementById('modalBody');
@@ -556,10 +589,17 @@ function renderBookingStep() {
         bookingData.slot = freeSlots[Number(btn.dataset.slot)];
       });
     });
-    document.getElementById('prevStep').addEventListener('click', () => { bookingStep = 1; renderBookingStep(); });
+    document.getElementById('prevStep').addEventListener('click', () => {
+      bookingStep = 1;
+      renderBookingStep();
+    });
     document.getElementById('nextStep')?.addEventListener('click', () => {
-      if (!bookingData.slot) { showToast('Выберите время', 'error'); return; }
-      bookingStep = 3; renderBookingStep();
+      if (!bookingData.slot) {
+        showToast('Выберите время', 'error');
+        return;
+      }
+      bookingStep = 3;
+      renderBookingStep();
     });
   } else {
     body.innerHTML = `
@@ -591,15 +631,28 @@ function renderBookingStep() {
         <button class="btn btn--primary" id="confirmBtn">Подтвердить</button>
       </div>
     `;
-    document.getElementById('prevStep').addEventListener('click', () => { bookingStep = 2; renderBookingStep(); });
+    document.getElementById('prevStep').addEventListener('click', () => {
+      bookingStep = 2;
+      renderBookingStep();
+    });
     document.getElementById('confirmBtn').addEventListener('click', () => {
       const name = document.getElementById('bookName').value.trim();
       const email = document.getElementById('bookEmail').value.trim();
       const errName = document.getElementById('errorName');
       const errEmail = document.getElementById('errorEmail');
       let ok = true;
-      if (name.length < 2) { errName.textContent = 'Минимум 2 символа'; ok = false; } else errName.textContent = '';
-      if (!email.includes('@') || !email.includes('.')) { errEmail.textContent = 'Некорректный email'; ok = false; } else errEmail.textContent = '';
+      if (name.length < 2) {
+        errName.textContent = 'Минимум 2 символа';
+        ok = false;
+      } else {
+        errName.textContent = '';
+      }
+      if (!email.includes('@') || !email.includes('.')) {
+        errEmail.textContent = 'Некорректный email';
+        ok = false;
+      } else {
+        errEmail.textContent = '';
+      }
       if (!ok) return;
 
       const all = loadSpecialists();
@@ -618,8 +671,11 @@ function renderBookingStep() {
   }
 }
 
-// ============ ТЕСТЫ ============
-let currentTest = null, currentStep = 0, answers = [], selectedAnswer = null;
+// тесты. Пошаговое прохождение: вопрос за вопросом
+let currentTest = null;
+let currentStep = 0;
+let answers = [];
+let selectedAnswer = null;
 
 function renderTests() {
   const grid = document.getElementById('testsGrid');
@@ -635,7 +691,13 @@ function renderTests() {
   grid.querySelectorAll('[data-test]').forEach(btn => {
     btn.addEventListener('click', () => {
       const test = TESTS.find(t => t.id === btn.dataset.test);
-      if (test) { currentTest = test; currentStep = 0; answers = []; selectedAnswer = null; renderTestStep(); }
+      if (test) {
+        currentTest = test;
+        currentStep = 0;
+        answers = [];
+        selectedAnswer = null;
+        renderTestStep();
+      }
     });
   });
 }
@@ -692,7 +754,7 @@ function showTestResult() {
   document.getElementById('closeTestResult').addEventListener('click', closeModal);
 }
 
-// ============ ДНЕВНИК ============
+// дневник настроения. Календарь и график
 let moodDate = new Date();
 let moodData = JSON.parse(localStorage.getItem('mindspace_mood') || '{}');
 
@@ -703,8 +765,9 @@ function moodKey(y, m, d) {
 function renderMood() {
   const grid = document.getElementById('moodGrid');
   if (!grid) return;
-  const y = moodDate.getFullYear(), m = moodDate.getMonth();
-  const monthNames = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+  const y = moodDate.getFullYear();
+  const m = moodDate.getMonth();
+  const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
   document.getElementById('currentMonth').textContent = `${monthNames[m]} ${y}`;
 
   let firstDay = new Date(y, m, 1).getDay();
@@ -745,7 +808,8 @@ function openMoodPicker(key, day) {
   const parts = key.split('-');
   const picked = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
   picked.setHours(0, 0, 0, 0);
-  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
   if (picked.getTime() > today.getTime()) return;
 
   const current = moodData[key];
@@ -773,17 +837,22 @@ function openMoodPicker(key, day) {
     btn.addEventListener('click', () => {
       moodData[key] = Number(btn.dataset.value);
       localStorage.setItem('mindspace_mood', JSON.stringify(moodData));
-      closeModal(); renderMood();
+      closeModal();
+      renderMood();
       showToast('Настроение сохранено', 'success', 2000);
     });
   });
   document.getElementById('removeMood')?.addEventListener('click', () => {
     delete moodData[key];
     localStorage.setItem('mindspace_mood', JSON.stringify(moodData));
-    closeModal(); renderMood();
+    closeModal();
+    renderMood();
   });
 }
 
+// график настроения на canvas. Изначально хотела использовать готовую
+// библиотеку типа Chart.js, но решила попробовать сама. Оказалось
+// сложнее чем думала, но разобралась
 function renderMoodChart() {
   const canvas = document.getElementById('moodChart');
   if (!canvas) return;
@@ -793,10 +862,13 @@ function renderMoodChart() {
   canvas.width = rect.width * dpr;
   canvas.height = rect.height * dpr;
   ctx.scale(dpr, dpr);
-  const w = rect.width, h = rect.height, pad = 30;
+  const w = rect.width;
+  const h = rect.height;
+  const pad = 30;
   ctx.clearRect(0, 0, w, h);
 
-  const y = moodDate.getFullYear(), m = moodDate.getMonth();
+  const y = moodDate.getFullYear();
+  const m = moodDate.getMonth();
   const daysInMonth = new Date(y, m + 1, 0).getDate();
   const points = [];
   for (let d = 1; d <= daysInMonth; d++) {
@@ -808,7 +880,10 @@ function renderMoodChart() {
   ctx.lineWidth = 1;
   for (let i = 0; i <= 5; i++) {
     const yy = pad + (h - 2 * pad) * (i / 5);
-    ctx.beginPath(); ctx.moveTo(pad, yy); ctx.lineTo(w - pad, yy); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(pad, yy);
+    ctx.lineTo(w - pad, yy);
+    ctx.stroke();
   }
   const hasData = points.some(p => p !== null);
   if (!hasData) {
@@ -826,31 +901,50 @@ function renderMoodChart() {
     if (v === null) return;
     const x = pad + stepX * i;
     const yy = h - pad - v * scaleY;
-    if (!started) { ctx.moveTo(x, yy); started = true; }
-    else ctx.lineTo(x, yy);
+    if (!started) {
+      ctx.moveTo(x, yy);
+      started = true;
+    } else {
+      ctx.lineTo(x, yy);
+    }
   });
-  ctx.strokeStyle = '#A8D5BA'; ctx.lineWidth = 3;
-  ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.stroke();
+  ctx.strokeStyle = '#A8D5BA';
+  ctx.lineWidth = 3;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  ctx.stroke();
   points.forEach((v, i) => {
     if (v === null) return;
     const x = pad + stepX * i;
     const yy = h - pad - v * scaleY;
-    ctx.beginPath(); ctx.arc(x, yy, 4, 0, Math.PI * 2);
-    ctx.fillStyle = '#A8D5BA'; ctx.fill();
-    ctx.strokeStyle = 'rgba(168, 213, 186, 0.3)'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(x, yy, 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#A8D5BA';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(168, 213, 186, 0.3)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
   });
 }
 
 function renderMoodSummary() {
-  const y = moodDate.getFullYear(), m = moodDate.getMonth();
+  const y = moodDate.getFullYear();
+  const m = moodDate.getMonth();
   const daysInMonth = new Date(y, m + 1, 0).getDate();
   const values = [];
-  let bestDay = null, bestValue = 0;
+  let bestDay = null;
+  let bestValue = 0;
 
   for (let d = 1; d <= daysInMonth; d++) {
     if (isFutureDate(y, m, d)) continue;
     const v = moodData[moodKey(y, m, d)];
-    if (v) { values.push(v); if (v > bestValue) { bestValue = v; bestDay = d; } }
+    if (v) {
+      values.push(v);
+      if (v > bestValue) {
+        bestValue = v;
+        bestDay = d;
+      }
+    }
   }
   const avgEl = document.getElementById('moodAvg');
   if (avgEl) avgEl.textContent = values.length ? (values.reduce((a, b) => a + b, 0) / values.length).toFixed(1) : '—';
@@ -858,7 +952,7 @@ function renderMoodSummary() {
   document.getElementById('moodCount').textContent = values.length;
 }
 
-// ============ АНИМАЦИЯ ============
+// появление блоков при скролле
 function initReveal() {
   const targets = document.querySelectorAll('.section, .step, .card, .test-card, .stat');
   if (!targets.length) return;
@@ -874,7 +968,7 @@ function initReveal() {
   targets.forEach(el => observer.observe(el));
 }
 
-// ============ СКРОЛЛ ============
+// плавная прокрутка по якорям
 function initSmoothScroll() {
   document.querySelectorAll('[data-scroll]').forEach(el => {
     el.addEventListener('click', () => {
@@ -884,7 +978,7 @@ function initSmoothScroll() {
   });
 }
 
-// ============ ФИЛЬТРЫ ============
+// фильтры в каталоге психологов
 function initFilters() {
   ['filterSpec', 'filterPrice', 'filterSearch'].forEach(id => {
     const el = document.getElementById(id);
@@ -895,7 +989,7 @@ function initFilters() {
   });
 }
 
-// ============ МОДАЛКА ЗАКРЫТИЕ ============
+// закрытие модалки по клику вне окна и по Escape
 function initModalClose() {
   document.querySelectorAll('[data-close="true"]').forEach(el => {
     el.addEventListener('click', closeModal);
@@ -908,7 +1002,7 @@ function initModalClose() {
   });
 }
 
-// ============ ПРОГРЕСС-БАР ============
+// полоска прогресса прокрутки вверху страницы
 function initProgressBar() {
   const bar = document.getElementById('progressBar');
   if (!bar) return;
@@ -919,7 +1013,7 @@ function initProgressBar() {
   });
 }
 
-// ============ КНОПКА НАВЕРХ ============
+// кнопка возврата наверх
 function initScrollTop() {
   const btn = document.getElementById('scrollTop');
   if (!btn) return;
@@ -929,7 +1023,7 @@ function initScrollTop() {
   btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 }
 
-// ============ ТЕМА ============
+// переключение тёмной темы. Выбор сохраняется
 function initTheme() {
   const btn = document.getElementById('themeBtn');
   if (!btn) return;
@@ -946,14 +1040,20 @@ function initTheme() {
   });
 }
 
-// ============ ДНЕВНИК НАВИГАЦИЯ ============
+// переключение месяцев в дневнике настроения
 function initMoodNav() {
-  document.getElementById('prevMonth')?.addEventListener('click', () => { moodDate.setMonth(moodDate.getMonth() - 1); renderMood(); });
-  document.getElementById('nextMonth')?.addEventListener('click', () => { moodDate.setMonth(moodDate.getMonth() + 1); renderMood(); });
+  document.getElementById('prevMonth')?.addEventListener('click', () => {
+    moodDate.setMonth(moodDate.getMonth() - 1);
+    renderMood();
+  });
+  document.getElementById('nextMonth')?.addEventListener('click', () => {
+    moodDate.setMonth(moodDate.getMonth() + 1);
+    renderMood();
+  });
   window.addEventListener('resize', renderMoodChart);
 }
 
-// ============ КНОПКИ "ЗАПИСАТЬСЯ" ============
+// кнопки записи на сессию
 function initBookingButtons() {
   document.getElementById('bookingBtn')?.addEventListener('click', () => {
     openBookingModal(null, null);
@@ -963,9 +1063,8 @@ function initBookingButtons() {
   });
 }
 
-// ============================================================
-// АДМИН-ПАНЕЛЬ
-// ============================================================
+// вход в админку. Пароль хранится прямо в коде, для учебного проекта
+// нормально, в реальном проекте нужно было бы через сервер
 function initAdmin() {
   const loginBtn = document.getElementById('loginBtn');
   if (loginBtn) {
@@ -1024,17 +1123,23 @@ function openLoginModal() {
     const pass = document.getElementById('loginPass').value.trim();
     const err = document.getElementById('loginError');
     if (name === ADMIN_LOGIN && pass === ADMIN_PASSWORD) {
-      setAdminLogged(true); updateLoginBtn();
+      setAdminLogged(true);
+      updateLoginBtn();
       requestNotificationPermission();
-      closeModal(); openAdminPanel();
+      closeModal();
+      openAdminPanel();
       showToast('Добро пожаловать, администратор!', 'success');
-    } else err.textContent = 'Неверный логин или пароль';
+    } else {
+      err.textContent = 'Неверный логин или пароль';
+    }
   };
   document.getElementById('loginSubmit').addEventListener('click', submit);
-  document.getElementById('loginPass').addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
+  document.getElementById('loginPass').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submit();
+  });
 }
 
-// ============ ПАНЕЛЬ АДМИНА ============
+// панель администратора с тремя вкладками
 let adminTab = 'list';
 let editingSpecialistId = null;
 
@@ -1086,7 +1191,11 @@ function renderAdminPanel() {
       </div>
     `;
     content.querySelectorAll('[data-edit]').forEach(btn => {
-      btn.addEventListener('click', () => { editingSpecialistId = Number(btn.dataset.edit); adminTab = 'add'; renderAdminPanel(); });
+      btn.addEventListener('click', () => {
+        editingSpecialistId = Number(btn.dataset.edit);
+        adminTab = 'add';
+        renderAdminPanel();
+      });
     });
     content.querySelectorAll('[data-del]').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -1096,7 +1205,8 @@ function renderAdminPanel() {
         saveSpecialists(SPECIALISTS);
         FAVORITES = FAVORITES.filter(fid => fid !== id);
         saveFavorites(FAVORITES);
-        renderSpecialists(); renderAdminPanel();
+        renderSpecialists();
+        renderAdminPanel();
         showToast('Психолог удалён', 'success');
       });
     });
@@ -1151,7 +1261,10 @@ function renderAddForm(content) {
     const education = document.getElementById('fEdu').value.trim();
     const languages = document.getElementById('fLang').value.trim();
     const approach = document.getElementById('fApproach').value.trim();
-    if (name.length < 3) { showToast('Введите ФИО', 'error'); return; }
+    if (name.length < 3) {
+      showToast('Введите ФИО', 'error');
+      return;
+    }
     if (editing) {
       const idx = SPECIALISTS.findIndex(x => x.id === editing.id);
       SPECIALISTS[idx] = { ...SPECIALISTS[idx], name, initials, color, spec: specVal, specName: specLabels[specVal], experience: exp, price, bio, education, languages, approach };
@@ -1163,7 +1276,8 @@ function renderAddForm(content) {
     }
     saveSpecialists(SPECIALISTS);
     renderSpecialists();
-    editingSpecialistId = null; adminTab = 'list';
+    editingSpecialistId = null;
+    adminTab = 'list';
     renderAdminPanel();
   });
 }
@@ -1217,8 +1331,10 @@ function renderSlotsTab(content) {
         const found = all.find(x => x.id === spId);
         if (found && found.slots[idx]) {
           found.slots[idx].booked = !found.slots[idx].booked;
-          saveSpecialists(all); SPECIALISTS = all;
-          renderSpecialists(); renderSlotsList();
+          saveSpecialists(all);
+          SPECIALISTS = all;
+          renderSpecialists();
+          renderSlotsList();
           showToast(found.slots[idx].booked ? 'Закрыто' : 'Открыто', 'success');
         }
       });
@@ -1230,8 +1346,10 @@ function renderSlotsTab(content) {
         const found = all.find(x => x.id === spId);
         if (found) {
           found.slots.splice(idx, 1);
-          saveSpecialists(all); SPECIALISTS = all;
-          renderSpecialists(); renderSlotsList();
+          saveSpecialists(all);
+          SPECIALISTS = all;
+          renderSpecialists();
+          renderSlotsList();
           showToast('Окошко удалено', 'success');
         }
       });
@@ -1243,21 +1361,26 @@ function renderSlotsTab(content) {
     const date = document.getElementById('slotDate').value;
     const time = document.getElementById('slotTime').value;
     const duration = Number(document.getElementById('slotDuration').value) || 60;
-    if (!date || !time) { showToast('Укажите дату и время', 'error'); return; }
+    if (!date || !time) {
+      showToast('Укажите дату и время', 'error');
+      return;
+    }
     const all = loadSpecialists();
     const found = all.find(x => x.id === spId);
     if (!found) return;
     if (!found.slots) found.slots = [];
     found.slots.push({ date, time, duration, booked: false });
     found.slots.sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
-    saveSpecialists(all); SPECIALISTS = all;
-    renderSpecialists(); renderSlotsList();
+    saveSpecialists(all);
+    SPECIALISTS = all;
+    renderSpecialists();
+    renderSlotsList();
     showToast('Окошко добавлено', 'success');
   });
   renderSlotsList();
 }
 
-// ============ ИНИЦИАЛИЗАЦИЯ ============
+// запуск всех функций при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
   initPreloader();
   initBurger();
