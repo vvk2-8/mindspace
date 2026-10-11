@@ -281,34 +281,24 @@ function initCookieBanner() {
   });
 }
 
-// счётчики цифр на главной. Анимируются при появлении на экране
+// счётчики цифр на главной. Плавно увеличиваются от нуля до нужного числа
 function initCounters() {
   const counters = document.querySelectorAll('[data-count]');
   if (!counters.length) return;
-  const animate = (el) => {
+  counters.forEach(el => {
     const target = Number(el.dataset.count);
     const suffix = el.dataset.suffix || '';
-    const duration = 2000;
-    const start = performance.now();
-    const tick = (now) => {
-      const progress = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const value = Math.floor(target * eased);
-      el.textContent = value.toLocaleString('ru-RU') + suffix;
-      if (progress < 1) requestAnimationFrame(tick);
-      else el.textContent = target.toLocaleString('ru-RU') + suffix;
-    };
-    requestAnimationFrame(tick);
-  };
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        animate(entry.target);
-        observer.unobserve(entry.target);
+    let current = 0;
+    const step = Math.ceil(target / 50);
+    const interval = setInterval(() => {
+      current += step;
+      if (current >= target) {
+        current = target;
+        clearInterval(interval);
       }
-    });
-  }, { threshold: 0.5 });
-  counters.forEach(el => observer.observe(el));
+      el.textContent = current.toLocaleString('ru-RU') + suffix;
+    }, 40);
+  });
 }
 
 // отрисовка карточек психологов с учётом фильтров
@@ -850,20 +840,16 @@ function openMoodPicker(key, day) {
   });
 }
 
-// график настроения на canvas. Изначально хотела использовать готовую
-// библиотеку типа Chart.js, но решила попробовать сама. Оказалось
-// сложнее чем думала, но разобралась
+// график настроения на canvas. Рисует линию по точкам за каждый день месяца
 function renderMoodChart() {
   const canvas = document.getElementById('moodChart');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  const dpr = window.devicePixelRatio || 1;
   const rect = canvas.getBoundingClientRect();
-  canvas.width = rect.width * dpr;
-  canvas.height = rect.height * dpr;
-  ctx.scale(dpr, dpr);
   const w = rect.width;
   const h = rect.height;
+  canvas.width = w;
+  canvas.height = h;
   const pad = 30;
   ctx.clearRect(0, 0, w, h);
 
@@ -876,15 +862,6 @@ function renderMoodChart() {
     else points.push(moodData[moodKey(y, m, d)] || null);
   }
 
-  ctx.strokeStyle = 'rgba(168, 158, 146, 0.15)';
-  ctx.lineWidth = 1;
-  for (let i = 0; i <= 5; i++) {
-    const yy = pad + (h - 2 * pad) * (i / 5);
-    ctx.beginPath();
-    ctx.moveTo(pad, yy);
-    ctx.lineTo(w - pad, yy);
-    ctx.stroke();
-  }
   const hasData = points.some(p => p !== null);
   if (!hasData) {
     ctx.fillStyle = '#A89E92';
@@ -910,8 +887,6 @@ function renderMoodChart() {
   });
   ctx.strokeStyle = '#A8D5BA';
   ctx.lineWidth = 3;
-  ctx.lineJoin = 'round';
-  ctx.lineCap = 'round';
   ctx.stroke();
   points.forEach((v, i) => {
     if (v === null) return;
@@ -921,9 +896,6 @@ function renderMoodChart() {
     ctx.arc(x, yy, 4, 0, Math.PI * 2);
     ctx.fillStyle = '#A8D5BA';
     ctx.fill();
-    ctx.strokeStyle = 'rgba(168, 213, 186, 0.3)';
-    ctx.lineWidth = 2;
-    ctx.stroke();
   });
 }
 
@@ -957,15 +929,17 @@ function initReveal() {
   const targets = document.querySelectorAll('.section, .step, .card, .test-card, .stat');
   if (!targets.length) return;
   targets.forEach(el => el.classList.add('reveal'));
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('reveal--visible');
-        observer.unobserve(entry.target);
+
+  const check = () => {
+    targets.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight - 50) {
+        el.classList.add('reveal--visible');
       }
     });
-  }, { threshold: 0.1 });
-  targets.forEach(el => observer.observe(el));
+  };
+  check();
+  window.addEventListener('scroll', check);
 }
 
 // плавная прокрутка по якорям
