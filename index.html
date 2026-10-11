@@ -6,7 +6,7 @@
   <title>MindSpace — забота о психическом здоровье онлайн</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -20,7 +20,7 @@
     <div class="preloader__bar"><div class="preloader__fill" id="preloaderFill"></div></div>
   </div>
 
-  <!-- ПРОГРЕСС-БАР ЧТЕНИЯ -->
+  <!-- ПРОГРЕСС-БАР -->
   <div class="progress-bar-top" id="progressBar"></div>
 
   <!-- КУКИ-БАННЕР -->
@@ -48,11 +48,12 @@
         <a href="#tests" class="nav__link">Тесты</a>
       </nav>
       <div class="navbar__actions">
-        <button class="icon-btn" id="themeBtn" title="Тема">🌙</button>
-        <button class="icon-btn" id="notifBtn" title="Уведомления">
-          🔔<span class="icon-btn__badge">3</span>
+        <button class="icon-btn" id="favBtn" title="Избранное">
+          ❤️<span class="icon-btn__badge icon-btn__badge--hidden" id="favCount">0</span>
         </button>
-        <button class="btn btn--primary" data-scroll="specialists">Записаться</button>
+        <button class="icon-btn" id="themeBtn" title="Тема">🌙</button>
+        <button class="btn btn--outline btn--small" id="loginBtn">Войти</button>
+        <button class="btn btn--primary btn--small" id="bookingBtn">Записаться</button>
         <button class="burger" id="burger" aria-label="Меню">
           <span></span><span></span><span></span>
         </button>
@@ -161,16 +162,15 @@
       <div class="mood-widget">
         <div class="mood-calendar">
           <div class="mood-calendar__header">
-            <button class="icon-btn" id="prevMonth" aria-label="Предыдущий месяц">←</button>
+            <button class="icon-btn" id="prevMonth">←</button>
             <span class="mood-calendar__month" id="currentMonth">Октябрь 2026</span>
-            <button class="icon-btn" id="nextMonth" aria-label="Следующий месяц">→</button>
+            <button class="icon-btn" id="nextMonth">→</button>
           </div>
           <div class="mood-calendar__weekdays">
             <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
           </div>
           <div class="mood-calendar__grid" id="moodGrid"></div>
         </div>
-
         <div class="mood-stats">
           <h3 class="mood-stats__title">Динамика настроения</h3>
           <canvas id="moodChart" width="500" height="220"></canvas>
@@ -202,27 +202,12 @@
     </div>
   </section>
 
-  <!-- ОТЗЫВЫ -->
-  <section id="reviews" class="section section--gray">
-    <div class="container">
-      <h2 class="section__title">Отзывы клиентов</h2>
-      <p class="section__subtitle">Более 12 000 сессий проведено</p>
-
-      <div class="reviews-slider">
-        <button class="slider-btn slider-btn--prev" id="prevReview">‹</button>
-        <div class="reviews-track" id="reviewsTrack"></div>
-        <button class="slider-btn slider-btn--next" id="nextReview">›</button>
-      </div>
-      <div class="reviews-dots" id="reviewsDots"></div>
-    </div>
-  </section>
-
   <!-- CTA -->
   <section class="cta">
     <div class="container cta__inner">
       <h2 class="cta__title">Начни заботиться о себе сегодня</h2>
       <p class="cta__subtitle">Первая сессия — со скидкой 50%</p>
-      <button class="btn btn--white" data-scroll="specialists">Записаться на сессию</button>
+      <button class="btn btn--white" id="bookingBtnCta">Записаться на сессию</button>
     </div>
   </section>
 
@@ -248,18 +233,6 @@
         <p class="footer__link">+7 (495) 000-00-00</p>
       </div>
     </div>
-
-    <div class="footer__subscribe">
-      <div class="container">
-        <h3 class="footer__subscribe-title">Письма о ментальном здоровье</h3>
-        <p class="footer__subscribe-text">Раз в неделю — упражнения и статьи. Без спама.</p>
-        <form class="subscribe-form" id="subscribeForm">
-          <input type="email" class="subscribe-form__input" id="subscribeEmail" placeholder="ваш@email.ru" required>
-          <button type="submit" class="btn btn--primary">Подписаться</button>
-        </form>
-      </div>
-    </div>
-
     <div class="footer__bottom">
       <div class="container">© 2026 MindSpace · Учебный проект МТУСИ</div>
     </div>
@@ -268,10 +241,22 @@
   <!-- МОДАЛКА -->
   <div class="modal" id="modal" aria-hidden="true">
     <div class="modal__overlay" data-close="true"></div>
-    <div class="modal__window">
+    <div class="modal__window" id="modalWindow">
       <button class="modal__close" data-close="true" aria-label="Закрыть">✕</button>
       <div class="modal__body" id="modalBody"></div>
     </div>
+  </div>
+
+  <!-- АДМИН-ПАНЕЛЬ -->
+  <div class="admin-panel" id="adminPanel" aria-hidden="true">
+    <div class="admin-panel__header">
+      <span class="admin-panel__title">👤 Админ-панель</span>
+      <div class="admin-panel__actions">
+        <button class="btn btn--small btn--outline" id="adminLogout">Выйти</button>
+        <button class="btn btn--small btn--ghost" id="adminClose">✕</button>
+      </div>
+    </div>
+    <div class="admin-panel__body" id="adminPanelBody"></div>
   </div>
 
   <!-- КНОПКА НАВЕРХ -->
