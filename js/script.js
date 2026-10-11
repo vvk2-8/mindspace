@@ -99,21 +99,6 @@ function updateFavCount() {
   badge.classList.toggle('icon-btn__badge--hidden', FAVORITES.length === 0);
 }
 
-// push-уведомления браузера. Работают только если пользователь
-// разрешил уведомления при входе в админку
-function showPushNotification(title, body) {
-  if (!('Notification' in window)) return;
-  if (Notification.permission !== 'granted') return;
-  try {
-    new Notification(title, { body });
-  } catch (e) {}
-}
-
-function requestNotificationPermission() {
-  if (!('Notification' in window)) return;
-  if (Notification.permission === 'default') Notification.requestPermission();
-}
-
 // вспомогательные функции для дат и длительности
 function formatDate(dateStr) {
   const parts = dateStr.split('-');
@@ -653,7 +638,6 @@ function renderBookingStep() {
         saveSpecialists(all);
         SPECIALISTS = all;
       }
-      showPushNotification('MindSpace', `Новая запись: ${name} → ${sp.name}`);
       renderSpecialists();
       showToast(`Заявка отправлена, ${name}!`, 'success');
       closeModal();
@@ -1099,7 +1083,6 @@ function openLoginModal() {
     if (name === ADMIN_LOGIN && pass === ADMIN_PASSWORD) {
       setAdminLogged(true);
       updateLoginBtn();
-      requestNotificationPermission();
       closeModal();
       openAdminPanel();
       showToast('Добро пожаловать, администратор!', 'success');
