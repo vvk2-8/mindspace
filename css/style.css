@@ -1026,7 +1026,9 @@ h1, h2, h3, h4 {
 }
 .reveal--visible { opacity: 1; transform: translateY(0); }
 
-/* ===== ТЁМНАЯ ТЕМА ===== */
+/* ============================================================
+   ТЁМНАЯ ТЕМА
+   ============================================================ */
 body.dark {
   --bg: #1E1C1A;
   --bg-gray: #262320;
@@ -1048,7 +1050,6 @@ body.dark h1, body.dark h2, body.dark h3 { color: var(--text); }
 body.dark .hero__title { color: var(--text); }
 body.dark .mood-day { background: #2E2A26; color: var(--text); }
 body.dark .mood-day:hover { background: #3A342E; }
-body.dark .mood-day--future { opacity: 0.25; }
 body.dark .slot { background: #2E2A26; color: var(--text); }
 body.dark .form-field__input,
 body.dark .form-field__textarea,
@@ -1066,7 +1067,59 @@ body.dark .backup-item { background: #2E2A26; }
 body.dark .notif-item--unread { background: rgba(168, 213, 186, 0.1); }
 body.dark .chart-bar-row__track { background: #3A342E; }
 
-/* ===== АДАПТИВ ===== */
+/* Кнопка "Войти" в тёмной теме */
+body.dark .navbar .btn--outline {
+  color: var(--text);
+  border-color: var(--border);
+}
+body.dark .navbar .btn--outline:hover {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+
+/* ЦВЕТА ДНЕЙ ДНЕВНИКА В ТЁМНОЙ ТЕМЕ — ЯРКИЕ */
+body.dark .mood-day--1 {
+  background: #E8A88C;
+  color: #1A1614;
+}
+body.dark .mood-day--2 {
+  background: #F2C9A8;
+  color: #1A1614;
+}
+body.dark .mood-day--3 {
+  background: #B89878;
+  color: #1A1614;
+}
+body.dark .mood-day--4 {
+  background: #7BA88E;
+  color: #1A1614;
+}
+body.dark .mood-day--5 {
+  background: #4A9E6E;
+  color: #FFFFFF;
+  font-weight: 700;
+}
+body.dark .mood-day--today {
+  outline: 2px solid #F4C949;
+  outline-offset: 2px;
+  font-weight: 700;
+}
+body.dark .mood-day--future {
+  background: #1F1B18;
+  color: #5A544E;
+  opacity: 0.35;
+}
+body.dark .mood-day--future:hover {
+  background: #1F1B18;
+  color: #5A544E;
+  border-color: transparent;
+}
+
+/* ============================================================
+   АДАПТИВ
+   ============================================================ */
+
 @media (max-width: 900px) {
   .container { padding: 0 20px; }
   .burger { display: flex; }
@@ -1082,7 +1135,10 @@ body.dark .chart-bar-row__track { background: #3A342E; }
     z-index: 99;
   }
   .nav--open { transform: translateY(0); }
-  .navbar__actions .btn { display: none; }
+
+  /* Скрываем "Записаться", но оставляем "Войти" */
+  .navbar__actions .btn--primary { display: none; }
+  .navbar__actions .btn--outline { display: inline-flex; }
   .navbar__actions .icon-btn { display: flex; }
 
   .hero { padding: 70px 0 90px; }
@@ -1112,40 +1168,43 @@ body.dark .chart-bar-row__track { background: #3A342E; }
   .modal__body { padding: 28px 24px; }
 }
 
-@media (max-width: 600px) {
-  .hero__title { font-size: 34px; }
-  .section__title { font-size: 26px; }
-  .step__num { width: 48px; height: 48px; font-size: 18px; }
-  .scroll-top { bottom: 20px; right: 20px; width: 44px; height: 44px; }
-  .profile-header { flex-direction: column; text-align: center; }
-}
-
 @media (max-width: 768px) {
   .nav { display: none; }
   .nav.nav--open { display: flex; }
   .burger { display: flex; }
-  .navbar__actions .btn { display: none; }
-  .navbar__inner { padding: 12px 16px; gap: 12px; }
+
+  /* Скрываем "Записаться", но оставляем "Войти" */
+  .navbar__actions .btn--primary { display: none; }
+  .navbar__actions .btn--outline { display: inline-flex; }
+
+  .navbar__inner { padding: 12px 16px; gap: 8px; }
   .logo { font-size: 20px; }
+  .logo__icon { font-size: 22px; }
+
   .hero { padding: 60px 0 70px; }
   .hero__badge { font-size: 11px; padding: 6px 14px; margin-bottom: 16px; }
   .hero__title { font-size: 38px; letter-spacing: -0.8px; line-height: 1.15; margin-bottom: 20px; }
   .hero__subtitle { font-size: 15px; margin-bottom: 28px; }
   .hero__buttons { flex-direction: column; align-items: stretch; gap: 10px; }
   .hero__buttons .btn { width: 100%; }
+
   .section { padding: 60px 0; }
   .section__title { font-size: 28px; }
   .section__subtitle { font-size: 15px; margin-bottom: 32px; }
+
   .stats__grid { grid-template-columns: 1fr 1fr; gap: 20px; }
   .stat__num { font-size: 32px; }
   .stat__label { font-size: 11px; }
+
   .steps { grid-template-columns: 1fr; gap: 16px; }
   .step { padding: 24px 20px; }
   .step__num { width: 48px; height: 48px; font-size: 18px; margin-bottom: 16px; }
   .step__title { font-size: 18px; }
   .step__text { font-size: 14px; }
+
   .filters { flex-direction: column; gap: 8px; margin-bottom: 24px; }
   .filter { width: 100%; min-width: 0; padding: 12px 16px; }
+
   .cards { grid-template-columns: 1fr; gap: 16px; }
   .card { padding: 24px 20px; gap: 12px; }
   .card__avatar { width: 64px; height: 64px; font-size: 22px; }
@@ -1153,6 +1212,7 @@ body.dark .chart-bar-row__track { background: #3A342E; }
   .card__meta { font-size: 12px; padding: 10px 0; }
   .card__price { font-size: 18px; }
   .card__btn { min-height: 44px; padding: 12px; font-size: 14px; }
+
   .mood-widget { grid-template-columns: 1fr; gap: 24px; padding: 20px 16px; }
   .mood-calendar__month { font-size: 16px; }
   .mood-calendar__weekdays { font-size: 11px; }
@@ -1160,48 +1220,66 @@ body.dark .chart-bar-row__track { background: #3A342E; }
   .mood-summary { grid-template-columns: 1fr; gap: 10px; }
   .mood-summary__value { font-size: 18px; }
   .mood-stats__title { font-size: 16px; }
+
   .tests { grid-template-columns: 1fr; gap: 16px; }
   .test-card { padding: 24px 20px; }
   .test-card__icon { font-size: 28px; }
   .test-card__title { font-size: 18px; }
+
   .cta { padding: 50px 0; }
   .cta__title { font-size: 26px; }
   .cta__subtitle { font-size: 15px; }
   .cta .btn { width: 100%; }
+
   .footer__inner { grid-template-columns: 1fr; gap: 24px; padding-bottom: 24px; }
   .footer { padding: 40px 0 0; }
+
   .modal { padding: 12px; align-items: flex-end; }
   .modal__window { max-width: 100%; max-height: 92vh; max-height: 92dvh; border-radius: 20px 20px 0 0; }
   .modal__body { padding: 24px 20px; }
   .modal__close { top: 10px; right: 10px; }
+
   .admin-panel { width: 100%; max-width: 100%; }
   .admin-panel__header { padding: 14px 16px; }
   .admin-panel__title { font-size: 16px; }
   .admin-panel__body { padding: 16px; }
-  .admin-tabs { gap: 4px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .admin-tab { padding: 10px 12px; font-size: 12px; white-space: nowrap; }
+  .admin-tabs { gap: 4px; }
+  .admin-tab { padding: 10px 12px; font-size: 12px; }
   .admin-item { padding: 12px; flex-wrap: wrap; }
   .admin-item__name { font-size: 14px; }
   .admin-item__meta { font-size: 11px; }
+
   .profile-header { flex-direction: column; text-align: center; }
   .profile-header__avatar { width: 72px; height: 72px; font-size: 26px; }
   .profile-header__name { font-size: 20px; }
-  .profile-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .profile-tab { padding: 10px 12px; font-size: 13px; white-space: nowrap; }
+  .profile-tabs { overflow-x: auto; }
+  .profile-tab { padding: 10px 12px; font-size: 13px; }
   .slots-grid { grid-template-columns: repeat(2, 1fr); }
+
   .form-field__input,
   .form-field__textarea,
   .form-field__select { padding: 14px 14px; font-size: 16px; }
+
   .cookie-banner { width: calc(100% - 24px); padding: 16px; bottom: 12px; }
   .cookie-banner__content { flex-direction: column; align-items: stretch; gap: 12px; }
   .cookie-banner__actions { width: 100%; }
   .cookie-banner__actions .btn { flex: 1; }
+
   .toast-container { top: auto; bottom: 90px; left: 12px; right: 12px; }
   .toast { min-width: 0; width: 100%; padding: 12px 16px; font-size: 13px; }
+
   .scroll-top { bottom: 16px; right: 16px; width: 44px; height: 44px; }
   .preloader__logo { font-size: 24px; }
   .preloader__icon { font-size: 28px; }
   .container { padding: 0 16px; }
+}
+
+@media (max-width: 600px) {
+  .hero__title { font-size: 34px; }
+  .section__title { font-size: 26px; }
+  .step__num { width: 48px; height: 48px; font-size: 18px; }
+  .scroll-top { bottom: 20px; right: 20px; width: 44px; height: 44px; }
+  .profile-header { flex-direction: column; text-align: center; }
 }
 
 @media (max-width: 480px) {

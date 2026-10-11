@@ -530,15 +530,12 @@ let bookingData = { specialist: null, slot: null, name: '', email: '' };
 
 function openBookingModal(sp, slot = null) {
   if (sp === null) {
-    // Открыли с общей кнопки — начинаем с выбора психолога
     bookingStep = 1;
     bookingData = { specialist: null, slot: null, name: '', email: '' };
   } else if (slot === null) {
-    // Пришли из карточки психолога без слота — шаг 2
     bookingStep = 2;
     bookingData = { specialist: sp, slot: null, name: '', email: '' };
   } else {
-    // Пришли со слота — сразу шаг 2 с выбранным временем
     bookingStep = 2;
     bookingData = { specialist: sp, slot: slot, name: '', email: '' };
   }
@@ -809,17 +806,17 @@ function openMoodPicker(key, day) {
   body.innerHTML = `
     <h3 style="font-family: var(--font-heading); font-size: 22px; margin-bottom: 6px;">Как ваше настроение?</h3>
     <p style="color: var(--text-soft); margin-bottom: 24px; font-size: 14px;">День ${day}</p>
-    <div style="display: flex; gap: 10px; justify-content: space-between; margin-bottom: 24px;">
+    <div style="display: flex; gap: 8px; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap;">
       ${MOODS.map(m => `
         <button class="mood-btn" data-value="${m.value}" style="
-          flex: 1; padding: 16px 8px; border-radius: 10px;
+          flex: 1 1 calc(20% - 8px); min-width: 60px; padding: 12px 6px; border-radius: 10px;
           background: ${current === m.value ? 'var(--mint)' : 'var(--bg-gray)'};
           border: 2px solid ${current === m.value ? 'var(--mint-dark)' : 'transparent'};
-          display: flex; flex-direction: column; align-items: center; gap: 6px;
+          display: flex; flex-direction: column; align-items: center; gap: 4px;
           cursor: pointer; transition: all 0.15s; font-family: inherit;
         ">
-          <span style="font-family: var(--font-heading); font-size: 22px; font-weight: 800; line-height: 1;">${m.num}</span>
-          <span style="font-size: 12px; font-weight: 600;">${m.label}</span>
+          <span style="font-family: var(--font-heading); font-size: 20px; font-weight: 800; line-height: 1;">${m.num}</span>
+          <span style="font-size: 11px; font-weight: 600; line-height: 1.1; text-align: center;">${m.label}</span>
         </button>
       `).join('')}
     </div>
@@ -1012,11 +1009,9 @@ function initMoodNav() {
 
 // ============ КНОПКИ "ЗАПИСАТЬСЯ" ============
 function initBookingButtons() {
-  // Кнопка в шапке
   document.getElementById('bookingBtn')?.addEventListener('click', () => {
     openBookingModal(null, null);
   });
-  // Кнопка в CTA-блоке
   document.getElementById('bookingBtnCta')?.addEventListener('click', () => {
     openBookingModal(null, null);
   });
