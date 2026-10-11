@@ -408,11 +408,7 @@ h1, h2, h3, h4 {
 }
 
 /* ===== ИЗБРАННОЕ ===== */
-.fav-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+.fav-list { display: flex; flex-direction: column; gap: 12px; }
 .fav-item {
   display: flex;
   align-items: center;
@@ -899,28 +895,19 @@ h1, h2, h3, h4 {
   gap: 10px;
   font-size: 13px;
 }
-.chart-bar-row__label {
-  min-width: 100px;
-  color: var(--text);
-}
+.chart-bar-row__label { min-width: 100px; color: var(--text); }
 .chart-bar-row__track {
-  flex: 1;
-  height: 8px;
+  flex: 1; height: 8px;
   background: var(--border);
-  border-radius: 4px;
-  overflow: hidden;
+  border-radius: 4px; overflow: hidden;
 }
 .chart-bar-row__fill {
-  height: 100%;
-  background: var(--mint);
-  border-radius: 4px;
-  transition: width 0.6s ease-out;
+  height: 100%; background: var(--mint);
+  border-radius: 4px; transition: width 0.6s ease-out;
 }
 .chart-bar-row__value {
-  min-width: 40px;
-  text-align: right;
-  color: var(--text-soft);
-  font-weight: 600;
+  min-width: 40px; text-align: right;
+  color: var(--text-soft); font-weight: 600;
 }
 
 /* ===== УВЕДОМЛЕНИЯ ===== */
@@ -930,10 +917,8 @@ h1, h2, h3, h4 {
   background: var(--bg-gray);
   border-radius: var(--radius-sm);
   border-left: 4px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: flex-start;
+  display: flex; justify-content: space-between;
+  gap: 12px; align-items: flex-start;
 }
 .notif-item--unread {
   border-left-color: var(--mint);
@@ -944,10 +929,8 @@ h1, h2, h3, h4 {
 
 /* ===== РЕЗЕРВНЫЕ КОПИИ ===== */
 .backup-actions {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
+  display: flex; gap: 8px;
+  margin-bottom: 20px; flex-wrap: wrap;
 }
 .backup-actions .btn { flex: 1; min-width: 140px; }
 .backup-item {
@@ -955,17 +938,13 @@ h1, h2, h3, h4 {
   background: var(--bg-gray);
   border-radius: var(--radius-sm);
   margin-bottom: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
+  display: flex; justify-content: space-between;
+  align-items: center; gap: 12px;
 }
 .backup-item__info { flex: 1; min-width: 0; }
 .backup-item__date {
   font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 14px;
-  margin-bottom: 2px;
+  font-weight: 700; font-size: 14px; margin-bottom: 2px;
 }
 .backup-item__meta { font-size: 12px; color: var(--text-soft); }
 
@@ -1019,7 +998,7 @@ h1, h2, h3, h4 {
 }
 .toast--leaving { animation: toastOut 0.3s ease-out forwards; }
 
-/* ===== АНИМАЦИЯ ПОЯВЛЕНИЯ ===== */
+/* ===== АНИМАЦИЯ ===== */
 .reveal {
   opacity: 0; transform: translateY(30px);
   transition: opacity 0.7s, transform 0.7s;
@@ -1027,7 +1006,7 @@ h1, h2, h3, h4 {
 .reveal--visible { opacity: 1; transform: translateY(0); }
 
 /* ============================================================
-   ТЁМНАЯ ТЕМА
+   ТЁМНАЯ ТЕМА — ПОЛНАЯ
    ============================================================ */
 body.dark {
   --bg: #1E1C1A;
@@ -1037,6 +1016,7 @@ body.dark {
   --text-soft: #A89E92;
   --border: #3A342E;
 }
+
 body.dark .navbar { background: rgba(30, 28, 26, 0.9); }
 body.dark .hero { background: linear-gradient(180deg, var(--bg) 0%, #2A2622 100%); }
 body.dark .stats { background: var(--bg-gray); }
@@ -1048,8 +1028,6 @@ body.dark .admin-item { background: #262320; }
 body.dark .admin-item__btn { background: #3A342E; color: var(--text); }
 body.dark h1, body.dark h2, body.dark h3 { color: var(--text); }
 body.dark .hero__title { color: var(--text); }
-body.dark .mood-day { background: #2E2A26; color: var(--text); }
-body.dark .mood-day:hover { background: #3A342E; }
 body.dark .slot { background: #2E2A26; color: var(--text); }
 body.dark .form-field__input,
 body.dark .form-field__textarea,
@@ -1078,25 +1056,66 @@ body.dark .navbar .btn--outline:hover {
   border-color: var(--text);
 }
 
-/* ЦВЕТА ДНЕЙ ДНЕВНИКА В ТЁМНОЙ ТЕМЕ — ЯРКИЕ */
+/* ===== ДНЕВНИК: ТЕКСТЫ В ТЁМНОЙ ТЕМЕ ===== */
+body.dark .mood-day {
+  background: #2E2A26;
+  color: #EFE9E0;
+}
+body.dark .mood-day:hover {
+  background: #3A342E;
+  color: #EFE9E0;
+}
+body.dark .mood-calendar__month {
+  color: #EFE9E0;
+}
+body.dark .mood-calendar__weekdays {
+  color: #A89E92;
+}
+body.dark .mood-stats__title {
+  color: #EFE9E0;
+}
+body.dark .mood-summary__label {
+  color: #A89E92;
+}
+body.dark .mood-summary__value {
+  color: #EFE9E0;
+}
+body.dark .mood-summary__item {
+  background: #2E2A26;
+  border: 1px solid #3A342E;
+}
+
+/* Кнопки настроения в модалке — тёмная тема */
+body.dark .mood-btn {
+  color: #EFE9E0 !important;
+}
+body.dark .mood-btn span:first-child {
+  color: #EFE9E0 !important;
+}
+body.dark .mood-btn span:last-child {
+  color: #A89E92 !important;
+}
+
+/* ===== ЦВЕТА ДНЕЙ ДНЕВНИКА В ТЁМНОЙ ТЕМЕ — 5 РАЗНЫХ ===== */
 body.dark .mood-day--1 {
+  background: #E07856;
+  color: #FFFFFF;
+  font-weight: 700;
+}
+body.dark .mood-day--2 {
   background: #E8A88C;
   color: #1A1614;
 }
-body.dark .mood-day--2 {
-  background: #F2C9A8;
-  color: #1A1614;
-}
 body.dark .mood-day--3 {
-  background: #B89878;
+  background: #D9C989;
   color: #1A1614;
 }
 body.dark .mood-day--4 {
-  background: #7BA88E;
+  background: #6FBF8C;
   color: #1A1614;
 }
 body.dark .mood-day--5 {
-  background: #4A9E6E;
+  background: #2E9B5C;
   color: #FFFFFF;
   font-weight: 700;
 }
@@ -1136,7 +1155,6 @@ body.dark .mood-day--future:hover {
   }
   .nav--open { transform: translateY(0); }
 
-  /* Скрываем "Записаться", но оставляем "Войти" */
   .navbar__actions .btn--primary { display: none; }
   .navbar__actions .btn--outline { display: inline-flex; }
   .navbar__actions .icon-btn { display: flex; }
@@ -1173,7 +1191,6 @@ body.dark .mood-day--future:hover {
   .nav.nav--open { display: flex; }
   .burger { display: flex; }
 
-  /* Скрываем "Записаться", но оставляем "Войти" */
   .navbar__actions .btn--primary { display: none; }
   .navbar__actions .btn--outline { display: inline-flex; }
 
