@@ -122,30 +122,6 @@ function requestNotificationPermission() {
   if (Notification.permission === 'default') Notification.requestPermission();
 }
 
-// ============ РЕЗЕРВНЫЕ КОПИИ ============
-function loadBackups() {
-  try { return JSON.parse(localStorage.getItem('mindspace_backups') || '[]'); }
-  catch (e) { return []; }
-}
-function saveBackups(list) {
-  localStorage.setItem('mindspace_backups', JSON.stringify(list));
-}
-function createBackup() {
-  const backups = loadBackups();
-  const snapshot = { id: Date.now(), date: new Date().toISOString(), data: loadSpecialists(), count: SPECIALISTS.length };
-  backups.unshift(snapshot);
-  if (backups.length > 10) backups.length = 10;
-  saveBackups(backups);
-  return snapshot;
-}
-function restoreBackup(id) {
-  const found = loadBackups().find(b => b.id === id);
-  if (!found) return false;
-  saveSpecialists(found.data);
-  SPECIALISTS = loadSpecialists();
-  return true;
-}
-
 // ============ УТИЛИТЫ ============
 function formatDate(dateStr) {
   const parts = dateStr.split('-');
@@ -664,7 +640,6 @@ function renderBookingStep() {
         SPECIALISTS = all;
       }
       addNotification(`Новая запись: ${name} → ${sp.name} (${formatDate(bookingData.slot.date)}, ${bookingData.slot.time})`);
-      createBackup();
       renderSpecialists();
       showToast(`Заявка отправлена, ${name}!`, 'success');
       closeModal();
@@ -858,7 +833,7 @@ function renderMoodChart() {
     else points.push(moodData[moodKey(y, m, d)] || null);
   }
 
-  ctx.strokeStyle = 'rgba(43, 43, 43, 0.08)';
+  ctx.strokeStyle = 'rgba(168, 158, 146, 0.15)';
   ctx.lineWidth = 1;
   for (let i = 0; i <= 5; i++) {
     const yy = pad + (h - 2 * pad) * (i / 5);
@@ -866,7 +841,7 @@ function renderMoodChart() {
   }
   const hasData = points.some(p => p !== null);
   if (!hasData) {
-    ctx.fillStyle = '#6B6B6B';
+    ctx.fillStyle = '#A89E92';
     ctx.font = '14px Manrope, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('Отметьте настроение, чтобы увидеть график', w / 2, h / 2);
@@ -891,7 +866,7 @@ function renderMoodChart() {
     const yy = h - pad - v * scaleY;
     ctx.beginPath(); ctx.arc(x, yy, 4, 0, Math.PI * 2);
     ctx.fillStyle = '#A8D5BA'; ctx.fill();
-    ctx.strokeStyle = '#FAF7F2'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.strokeStyle = 'rgba(168, 213, 186, 0.3)'; ctx.lineWidth = 2; ctx.stroke();
   });
 }
 
@@ -1018,7 +993,7 @@ function initBookingButtons() {
 }
 
 // ============================================================
-// АДМИН
+// АДМИН-ПАНЕЛЬ
 // ============================================================
 function initAdmin() {
   const loginBtn = document.getElementById('loginBtn');
@@ -1112,7 +1087,6 @@ function renderAdminPanel() {
       <button class="admin-tab ${adminTab === 'slots' ? 'admin-tab--active' : ''}" data-tab="slots">Окошки</button>
       <button class="admin-tab ${adminTab === 'notifs' ? 'admin-tab--active' : ''}" data-tab="notifs">Уведомл.${unreadBadge}</button>
       <button class="admin-tab ${adminTab === 'stats' ? 'admin-tab--active' : ''}" data-tab="stats">Статистика</button>
-      <button class="admin-tab ${adminTab === 'backup' ? 'admin-tab--active' : ''}" data-tab="backup">Копии</button>
     </div>
     <div id="adminContent"></div>
   `;
@@ -1170,8 +1144,6 @@ function renderAdminPanel() {
     renderNotifsTab(content);
   } else if (adminTab === 'stats') {
     renderStatsTab(content);
-  } else if (adminTab === 'backup') {
-    renderBackupTab(content);
   }
 }
 
@@ -1232,7 +1204,6 @@ function renderAddForm(content) {
       showToast('Психолог добавлен', 'success');
     }
     saveSpecialists(SPECIALISTS);
-    createBackup();
     renderSpecialists();
     editingSpecialistId = null; adminTab = 'list';
     renderAdminPanel();
@@ -1392,84 +1363,6 @@ function renderStatsTab(content) {
   `;
 }
 
-function renderBackupTab(content) {
-  const backups = loadBackups();
-  content.innerHTML = `
-    <p style="color: var(--text-soft); margin-bottom: 16px; font-size: 14px;">Резервные копии. Хранится до 10.</p>
-    <div class="backup-actions">
-      <button class="btn btn--primary" id="createBackupBtn">💾 Создать копию</button>
-      <button class="btn btn--ghost" id="exportJsonBtn">📤 Экспорт JSON</button>
-      <button class="btn btn--ghost" id="importJsonBtn">📥 Импорт JSON</button>
-    </div>
-    <h4 style="font-family: var(--font-heading); font-size: 16px; margin-bottom: 12px;">История (${backups.length})</h4>
-    <div>
-      ${backups.length ? backups.map(b => `
-        <div class="backup-item">
-          <div class="backup-item__info">
-            <div class="backup-item__date">${new Date(b.date).toLocaleString('ru-RU')}</div>
-            <div class="backup-item__meta">Психологов: ${b.count}</div>
-          </div>
-          <div class="admin-item__actions">
-            <button class="admin-item__btn" data-restore="${b.id}">↩️</button>
-            <button class="admin-item__btn admin-item__btn--danger" data-delbackup="${b.id}">🗑️</button>
-          </div>
-        </div>
-      `).join('') : '<p style="color: var(--text-soft);">Пусто.</p>'}
-    </div>
-    <input type="file" id="importFile" accept=".json" style="display: none;">
-  `;
-  document.getElementById('createBackupBtn')?.addEventListener('click', () => {
-    const b = createBackup();
-    renderBackupTab(content);
-    showToast(`Копия создана (${b.count})`, 'success');
-  });
-  document.getElementById('exportJsonBtn')?.addEventListener('click', () => {
-    const data = { specialists: loadSpecialists(), favorites: loadFavorites(), exportedAt: new Date().toISOString() };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `mindspace-backup-${new Date().toISOString().slice(0,10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    showToast('Файл скачан', 'success');
-  });
-  document.getElementById('importJsonBtn')?.addEventListener('click', () => document.getElementById('importFile').click());
-  document.getElementById('importFile')?.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      try {
-        const data = JSON.parse(ev.target.result);
-        if (!data.specialists || !Array.isArray(data.specialists)) throw new Error('Неверный формат');
-        createBackup();
-        saveSpecialists(data.specialists);
-        SPECIALISTS = loadSpecialists();
-        if (data.favorites) { saveFavorites(data.favorites); FAVORITES = loadFavorites(); updateFavCount(); }
-        renderSpecialists(); renderAdminPanel();
-        showToast(`Импортировано ${data.specialists.length}`, 'success');
-      } catch (err) { showToast('Ошибка импорта: ' + err.message, 'error'); }
-    };
-    reader.readAsText(file);
-  });
-  content.querySelectorAll('[data-restore]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = Number(btn.dataset.restore);
-      if (!confirm('Восстановить? Текущие данные заменятся.')) return;
-      if (restoreBackup(id)) { renderSpecialists(); renderAdminPanel(); showToast('Восстановлено', 'success'); }
-    });
-  });
-  content.querySelectorAll('[data-delbackup]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = Number(btn.dataset.delbackup);
-      const list = loadBackups().filter(b => b.id !== id);
-      saveBackups(list);
-      renderBackupTab(content);
-    });
-  });
-}
-
 // ============ ИНИЦИАЛИЗАЦИЯ ============
 document.addEventListener('DOMContentLoaded', () => {
   initPreloader();
@@ -1490,11 +1383,4 @@ document.addEventListener('DOMContentLoaded', () => {
   initAdmin();
   initFavBtn();
   initBookingButtons();
-
-  const lastBackup = localStorage.getItem('mindspace_last_backup');
-  const today = new Date().toISOString().slice(0, 10);
-  if (lastBackup !== today) {
-    createBackup();
-    localStorage.setItem('mindspace_last_backup', today);
-  }
 });
