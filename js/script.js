@@ -1,7 +1,5 @@
-// список психологов. Пока просто массив в коде, потом можно
-// вынести в базу данных, но для учебного проекта и так сойдёт
 const DEFAULT_SPECIALISTS = [
-  { id: 1, name: 'Анна Смирнова', initials: 'АС', color: '#A8D5BA', spec: 'anxiety', specName: 'Тревожность', experience: 8, price: 2500, rating: 4.9, reviews: 124,
+  { id: 1, name: 'Анна Смирнова', photo: 'anna.jpg', initials: 'АС', color: '#A8D5BA', spec: 'anxiety', specName: 'Тревожность', experience: 8, price: 2500, rating: 4.9, reviews: 124,
     bio: 'Специализируюсь на работе с тревожными состояниями и паническими атаками.', education: 'МГУ им. М.В. Ломоносова, 2016', languages: 'Русский, английский', approach: 'КПТ, mindfulness',
     slots: [
       { date: '2026-10-15', time: '10:00', duration: 60, booked: false },
@@ -9,32 +7,32 @@ const DEFAULT_SPECIALISTS = [
       { date: '2026-10-16', time: '12:00', duration: 90, booked: true },
       { date: '2026-10-17', time: '16:00', duration: 60, booked: false }
     ]},
-  { id: 2, name: 'Дмитрий Волков', initials: 'ДВ', color: '#B8A9D9', spec: 'depression', specName: 'Депрессия', experience: 12, price: 3500, rating: 5.0, reviews: 210,
+  { id: 2, name: 'Дмитрий Волков', photo: 'dmitry.jpg', initials: 'ДВ', color: '#B8A9D9', spec: 'depression', specName: 'Депрессия', experience: 12, price: 3500, rating: 5.0, reviews: 210,
     bio: 'Работаю с депрессивными состояниями, потерей смысла, кризисами.', education: 'СПбГУ, 2012', languages: 'Русский', approach: 'Психодинамическая терапия, ACT',
     slots: [
       { date: '2026-10-15', time: '11:00', duration: 60, booked: false },
       { date: '2026-10-16', time: '15:00', duration: 90, booked: false },
       { date: '2026-10-18', time: '10:00', duration: 60, booked: false }
     ]},
-  { id: 3, name: 'Елена Кузнецова', initials: 'ЕК', color: '#F2C4A7', spec: 'relations', specName: 'Отношения', experience: 6, price: 2000, rating: 4.8, reviews: 89,
+  { id: 3, name: 'Елена Кузнецова', photo: 'elena.jpg', initials: 'ЕК', color: '#F2C4A7', spec: 'relations', specName: 'Отношения', experience: 6, price: 2000, rating: 4.8, reviews: 89,
     bio: 'Помогаю парам и отдельным людям разбираться в отношениях.', education: 'РГГУ, 2018', languages: 'Русский', approach: 'Системная семейная терапия, ЭФТ',
     slots: [
       { date: '2026-10-15', time: '13:00', duration: 60, booked: false },
       { date: '2026-10-17', time: '18:00', duration: 60, booked: false }
     ]},
-  { id: 4, name: 'Игорь Петров', initials: 'ИП', color: '#A8D5BA', spec: 'career', specName: 'Карьера', experience: 10, price: 3000, rating: 4.9, reviews: 156,
+  { id: 4, name: 'Игорь Петров', photo: 'igor.jpg', initials: 'ИП', color: '#A8D5BA', spec: 'career', specName: 'Карьера', experience: 10, price: 3000, rating: 4.9, reviews: 156,
     bio: 'Карьерный консультант. Помогаю найти своё дело.', education: 'ВШЭ, 2014', languages: 'Русский, английский', approach: 'Коучинг, КПТ',
     slots: [
       { date: '2026-10-16', time: '11:00', duration: 60, booked: false },
       { date: '2026-10-18', time: '14:00', duration: 90, booked: false }
     ]},
-  { id: 5, name: 'Мария Соколова', initials: 'МС', color: '#B8A9D9', spec: 'child', specName: 'Детская психология', experience: 7, price: 2800, rating: 5.0, reviews: 98,
+  { id: 5, name: 'Мария Соколова', photo: 'maria.jpg', initials: 'МС', color: '#B8A9D9', spec: 'child', specName: 'Детская психология', experience: 7, price: 2800, rating: 5.0, reviews: 98,
     bio: 'Работаю с детьми от 4 до 16 лет и их родителями.', education: 'МПГУ, 2017', languages: 'Русский', approach: 'Игровая терапия, арт-терапия',
     slots: [
       { date: '2026-10-15', time: '16:00', duration: 60, booked: false },
       { date: '2026-10-17', time: '11:00', duration: 45, booked: false }
     ]},
-  { id: 6, name: 'Ольга Новикова', initials: 'ОН', color: '#F2C4A7', spec: 'anxiety', specName: 'Тревожность', experience: 5, price: 1800, rating: 4.7, reviews: 67,
+  { id: 6, name: 'Ольга Новикова', photo: 'olga.jpg', initials: 'ОН', color: '#F2C4A7', spec: 'anxiety', specName: 'Тревожность', experience: 5, price: 1800, rating: 4.7, reviews: 67,
     bio: 'Помогаю справиться с тревогой, страхами и неуверенностью.', education: 'МГППУ, 2019', languages: 'Русский', approach: 'КПТ, телесно-ориентированная терапия',
     slots: [
       { date: '2026-10-16', time: '10:00', duration: 60, booked: false },
@@ -42,8 +40,6 @@ const DEFAULT_SPECIALISTS = [
     ]}
 ];
 
-// сохранение и загрузка из localStorage.
-// тут сначала не работало, оказалось надо JSON.stringify
 function loadSpecialists() {
   var saved = localStorage.getItem('mindspace_specialists');
   if (saved) {
@@ -69,7 +65,6 @@ function saveSpecialists(list) {
 
 var SPECIALISTS = loadSpecialists();
 
-// избранное
 function loadFavorites() {
   try {
     return JSON.parse(localStorage.getItem('mindspace_favorites') || '[]');
@@ -99,7 +94,6 @@ function updateFavCount() {
   badge.classList.toggle('icon-btn__badge--hidden', FAVORITES.length === 0);
 }
 
-// вспомогательные функции для дат
 function formatDate(dateStr) {
   var parts = dateStr.split('-');
   var months = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
@@ -131,7 +125,6 @@ function isTodayDate(y, m, d) {
   return cellDate.getTime() === today.getTime();
 }
 
-// вход в админку
 var ADMIN_LOGIN = 'admin';
 var ADMIN_PASSWORD = 'admin123';
 
@@ -144,7 +137,6 @@ function setAdminLogged(value) {
   else localStorage.removeItem('mindspace_admin');
 }
 
-// тесты
 var TESTS = [
   { id: 'stress', icon: '01', title: 'Уровень стресса', desc: '5 вопросов · 2 минуты',
     questions: [
@@ -187,7 +179,6 @@ var TESTS = [
     ] }
 ];
 
-// настроения для дневника
 var MOODS = [
   { value: 1, num: '1', label: 'Плохо' },
   { value: 2, num: '2', label: 'Так себе' },
@@ -196,7 +187,6 @@ var MOODS = [
   { value: 5, num: '5', label: 'Отлично' }
 ];
 
-// всплывающие сообщения
 function showToast(message, type, duration) {
   type = type || 'info';
   duration = duration || 3500;
@@ -213,7 +203,6 @@ function showToast(message, type, duration) {
   }, duration);
 }
 
-// прелоадер
 function initPreloader() {
   var preloader = document.getElementById('preloader');
   var fill = document.getElementById('preloaderFill');
@@ -234,7 +223,6 @@ function initPreloader() {
   }, 150);
 }
 
-// кнопка меню для мобильных
 function initBurger() {
   var burger = document.getElementById('burger');
   var nav = document.getElementById('nav');
@@ -252,7 +240,6 @@ function initBurger() {
   });
 }
 
-// cookies баннер
 function initCookieBanner() {
   var banner = document.getElementById('cookieBanner');
   if (!banner) return;
@@ -279,7 +266,6 @@ function initCookieBanner() {
   }
 }
 
-// счётчики цифр
 function initCounters() {
   var counters = document.querySelectorAll('[data-count]');
   if (!counters.length) return;
@@ -299,7 +285,6 @@ function initCounters() {
   });
 }
 
-// карточки психологов
 function renderSpecialists() {
   var grid = document.getElementById('specialistsGrid');
   if (!grid) return;
@@ -333,7 +318,11 @@ function renderSpecialists() {
     var isFav = FAVORITES.indexOf(s.id) > -1;
     html += '<div class="card">';
     html += '<button class="card__fav ' + (isFav ? 'card__fav--active' : '') + '" data-fav="' + s.id + '">❤️</button>';
-    html += '<div class="card__avatar" style="background: ' + s.color + ';">' + s.initials + '</div>';
+    if (s.photo) {
+      html += '<img src="' + s.photo + '" alt="' + s.name + '" class="card__avatar card__avatar--photo">';
+    } else {
+      html += '<div class="card__avatar" style="background: ' + s.color + ';">' + s.initials + '</div>';
+    }
     html += '<h3 class="card__name">' + s.name + '</h3>';
     html += '<p class="card__spec">' + s.specName + '</p>';
     html += '<div class="card__meta">';
@@ -373,7 +362,6 @@ function renderSpecialists() {
   });
 }
 
-// окно избранного
 function openFavoritesModal() {
   var modal = document.getElementById('modal');
   var body = document.getElementById('modalBody');
@@ -397,7 +385,11 @@ function openFavoritesModal() {
   html += '<div class="fav-list">';
   favList.forEach(function (s) {
     html += '<div class="fav-item">';
-    html += '<div class="fav-item__avatar" style="background: ' + s.color + ';">' + s.initials + '</div>';
+    if (s.photo) {
+      html += '<img src="' + s.photo + '" alt="' + s.name + '" class="fav-item__avatar fav-item__avatar--photo">';
+    } else {
+      html += '<div class="fav-item__avatar" style="background: ' + s.color + ';">' + s.initials + '</div>';
+    }
     html += '<div class="fav-item__info">';
     html += '<div class="fav-item__name">' + s.name + '</div>';
     html += '<div class="fav-item__meta">' + s.specName + ' · ' + s.price + ' ₽</div>';
@@ -423,7 +415,6 @@ function openFavoritesModal() {
   });
 }
 
-// профиль психолога
 function openProfileModal(sp) {
   var modal = document.getElementById('modal');
   var body = document.getElementById('modalBody');
@@ -437,7 +428,7 @@ function openProfileModal(sp) {
   var education = sp.education ? sp.education : 'Не указано';
 
   body.innerHTML = '<div class="profile-header">' +
-    '<div class="profile-header__avatar" style="background: ' + sp.color + ';">' + sp.initials + '</div>' +
+    (sp.photo ? '<img src="' + sp.photo + '" alt="' + sp.name + '" class="profile-header__avatar profile-header__avatar--photo">' : '<div class="profile-header__avatar" style="background: ' + sp.color + ';">' + sp.initials + '</div>') +
     '<div class="profile-header__info">' +
     '<div class="profile-header__name">' + sp.name + '</div>' +
     '<div class="profile-header__spec">' + sp.specName + ' · Опыт ' + sp.experience + ' лет</div>' +
@@ -506,7 +497,6 @@ function closeModal() {
   if (w) w.classList.remove('modal__window--wide');
 }
 
-// запись на сессию (3 шага)
 var bookingStep = 1;
 var bookingData = { specialist: null, slot: null, name: '', email: '' };
 
@@ -690,7 +680,6 @@ function renderBookingStep() {
   }
 }
 
-// тесты
 var currentTest = null;
 var currentStep = 0;
 var answers = [];
@@ -792,7 +781,6 @@ function showTestResult() {
   document.getElementById('closeTestResult').addEventListener('click', closeModal);
 }
 
-// дневник настроения
 var moodDate = new Date();
 var moodData = JSON.parse(localStorage.getItem('mindspace_mood') || '{}');
 
@@ -897,7 +885,6 @@ function openMoodPicker(key, day) {
   }
 }
 
-// график настроения. тут пришлось повозиться, но вроде работает
 function renderMoodChart() {
   var canvas = document.getElementById('moodChart');
   if (!canvas) return;
@@ -993,7 +980,6 @@ function renderMoodSummary() {
   document.getElementById('moodCount').textContent = values.length;
 }
 
-// появление блоков при скролле
 function initReveal() {
   var targets = document.querySelectorAll('.section, .step, .card, .test-card, .stat');
   if (!targets.length) return;
@@ -1014,7 +1000,6 @@ function initReveal() {
   window.addEventListener('scroll', check);
 }
 
-// плавная прокрутка
 function initSmoothScroll() {
   document.querySelectorAll('[data-scroll]').forEach(function (el) {
     el.addEventListener('click', function () {
@@ -1024,7 +1009,6 @@ function initSmoothScroll() {
   });
 }
 
-// фильтры
 function initFilters() {
   var ids = ['filterSpec', 'filterPrice', 'filterSearch'];
   ids.forEach(function (id) {
@@ -1036,7 +1020,6 @@ function initFilters() {
   });
 }
 
-// закрытие модалки
 function initModalClose() {
   document.querySelectorAll('[data-close="true"]').forEach(function (el) {
     el.addEventListener('click', closeModal);
@@ -1050,7 +1033,6 @@ function initModalClose() {
   });
 }
 
-// прогресс-бар вверху
 function initProgressBar() {
   var bar = document.getElementById('progressBar');
   if (!bar) return;
@@ -1061,7 +1043,6 @@ function initProgressBar() {
   });
 }
 
-// кнопка наверх
 function initScrollTop() {
   var btn = document.getElementById('scrollTop');
   if (!btn) return;
@@ -1074,7 +1055,6 @@ function initScrollTop() {
   });
 }
 
-// тёмная тема
 function initTheme() {
   var btn = document.getElementById('themeBtn');
   if (!btn) return;
@@ -1094,7 +1074,6 @@ function initTheme() {
   });
 }
 
-// переключение месяцев
 function initMoodNav() {
   var prevBtn = document.getElementById('prevMonth');
   if (prevBtn) {
@@ -1113,7 +1092,6 @@ function initMoodNav() {
   window.addEventListener('resize', renderMoodChart);
 }
 
-// кнопки записи
 function initBookingButtons() {
   var btn1 = document.getElementById('bookingBtn');
   if (btn1) {
@@ -1129,7 +1107,6 @@ function initBookingButtons() {
   }
 }
 
-// админка
 function initAdmin() {
   var loginBtn = document.getElementById('loginBtn');
   if (loginBtn) {
@@ -1205,7 +1182,6 @@ function openLoginModal() {
   });
 }
 
-// панель админа
 var adminTab = 'list';
 var editingSpecialistId = null;
 
@@ -1539,7 +1515,6 @@ function renderSlotsTab(content) {
   renderSlotsList();
 }
 
-// запуск всего при загрузке страницы
 document.addEventListener('DOMContentLoaded', function () {
   initPreloader();
   initBurger();
@@ -1560,8 +1535,3 @@ document.addEventListener('DOMContentLoaded', function () {
   initFavBtn();
   initBookingButtons();
 });
-
-// TODO: хотела ещё сделать сортировку психологов по рейтингу,
-// но не успела до дедлайна. Может быть позже добавлю.
-//
-// console.log('Все функции запустились');
