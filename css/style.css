@@ -833,3 +833,25 @@ body.dark .admin-item__btn { background: #3A342E; color: var(--text); }
     right: max(16px, env(safe-area-inset-right));
   }
 }
+.card__avatar--photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+}
+
+.profile-header__avatar--photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.fav-item__avatar--photo {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
